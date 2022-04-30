@@ -10,6 +10,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
+#include "math.h"
 
 /// <summary>
 /// ゲームシーン
@@ -62,6 +63,7 @@ class GameScene {
 
 	ViewProjection viewProjection_;
 
+	float PI = 3.141592f;
 
 	//頂点
 	Vector3 vertex[8] = 
@@ -103,21 +105,46 @@ class GameScene {
 
 	Vector4 RED = {1.0f, 0.0f, 0.0f, 1.0f};
 
-	float afinTranslation[3][3] = {
-	  {1.0f, 0.0f, 100.0f}, //拡大、縮小率、X平行移動値
-	  {0.0f, 1.0f, 100.0f}, //回転(sin,cos)、Y平行移動値
-	  {0.0f, 0.0f, 1.0f  }
+	Vector3 scaleVertex[8] = {};
+
+	float afinTranslation[4][4] =
+	{
+	  {1.0f, 0.0f, 0.0f, 0.0f},
+	  {0.0f, 1.0f, 0.0f, 0.0f},
+	  {0.0f, 0.0f, 1.0f, 0.0f},
+	  {100.0f, 100.0f, 100.0f, 1.0f},//Tx,Ty,Tz,1
     };
 
-	float afinScale[3][3] = {
-	 
+	float afinScale[4][4] = 
+	{
+		{2.0f,0.0f,0.0f,0.0f},//x軸
+		{0.0f,2.0f,0.0f,0.0f},//y軸
+		{0.0f,0.0f,2.0f,0.0f},//z軸
+		{0.0f,0.0f,0.0f,1.0f},//？
 	};
 
 	// 45度の回転
-	float afinRotation[3][3] = {
+	float afinRotationX[4][4] = 
+	{
+		{1.0f,0.0f, 0.0f, 0.0f}, //x = x
+		{0.0f,cos(PI/4),sin(PI/4),0.0f},// y=ycosΘ-zsinΘ
+		{0.0f,-sin(PI/4),cos(PI/4),0.0f},//z=ysinΘ+zcosΘ
+		{0.0f,0.0f,0.0f,1.0f},//
 	  
 	};
 
+	float afinRotationY[4][4] = {
+	  {cos(PI / 4),0.0f,-sin(PI / 4),0.0f},//x=xcosΘ+zsinΘ
+	  {0.0f,1.0f,0.0,0.0f},//y=y
+	  {sin(PI / 4),0.0f,cos(PI / 4),0.0f},//z=xsinΘ+zcosΘ
+	  {0.0f,0.0f,0.0f,1.0f},//
+	};
+	float afinRotationZ[4][4] = {
+	  {cos(PI / 4),sin(PI / 4),0.0f,0.0f},//x=cosΘ-ysinΘ
+	  {-sin(PI / 4),cos(PI / 4),0.0f,0.0f},//y=xsinΘ+ycosΘ
+	  {0.0f,0.0f,1.0f,0.0f},//z=z
+	  {0.0f,0.0f,0.0f,1.0f},//
+	};
 
 	/// <summary>
 	/// ゲームシーン用

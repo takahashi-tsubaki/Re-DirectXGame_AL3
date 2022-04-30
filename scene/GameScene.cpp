@@ -38,6 +38,17 @@ void GameScene::Initialize() {
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 	
+	for (int i = 0; i < 8; i++) {
+		scaleVertex[i] = vertex[i];
+	}
+	
+
+	for (int i = 0; i < 8; i++) {
+		scaleVertex[i].x *= afinScale[0][0];
+		scaleVertex[i].y *= afinScale[1][1];
+		scaleVertex[i].z *= afinScale[2][2];
+	};
+
 }
 
 void GameScene::Update() 
@@ -83,9 +94,16 @@ void GameScene::Draw() {
 	//model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 	
 	//ラインの描画
+	//拡大された立方体の描画
+	for (int i = 0; i < _countof(edgeList); i++) {
+		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		  scaleVertex[edgeList[i][0]], scaleVertex[edgeList[i][1]], BLUE);
+	}
+
 	for (int i = 0; i < _countof(edgeList); i++) {
 		PrimitiveDrawer::GetInstance()->DrawLine3d(vertex[edgeList[i][0]], vertex[edgeList[i][1]], WHITE);
 	}
+	
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
