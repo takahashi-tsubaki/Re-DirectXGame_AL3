@@ -105,14 +105,23 @@ class GameScene {
 
 	Vector4 RED = {1.0f, 0.0f, 0.0f, 1.0f};
 
+	Vector4 BLACK = {0.0f, 0.0f, 0.0f, 1.0f};
+
+	Vector4 PURPLE = {1.0f, 0.0f, 1.0f, 1.0f};
+
+	Vector3 translationVertex[8] = {};
 	Vector3 scaleVertex[8] = {};
+	Vector3 rotaXVertex[8] = {};
+	Vector3 rotaYVertex[8] = {};
+	Vector3 rotaZVertex[8] = {};
+
 
 	float afinTranslation[4][4] =
 	{
-	  {1.0f, 0.0f, 0.0f, 0.0f},
-	  {0.0f, 1.0f, 0.0f, 0.0f},
-	  {0.0f, 0.0f, 1.0f, 0.0f},
-	  {100.0f, 100.0f, 100.0f, 1.0f},//Tx,Ty,Tz,1
+	  {1.0f, 0.0f, 0.0f, 10.0f},
+	  {0.0f, 1.0f, 0.0f, 10.0f},
+	  {0.0f, 0.0f, 1.0f, 10.0f},
+	  {0.0f, 0.0f, 0.0f, 1.0f},//Tx,Ty,Tz,1
     };
 
 	float afinScale[4][4] = 
