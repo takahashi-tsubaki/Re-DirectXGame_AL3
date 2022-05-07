@@ -10,6 +10,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
+#include "math.h"
 
 /// <summary>
 /// ゲームシーン
@@ -62,20 +63,21 @@ class GameScene {
 
 	ViewProjection viewProjection_;
 
+	float PI = 3.141592f;
 
 	//頂点
 	Vector3 vertex[8] = 
 	{
 		// x     y     z
 		{0.0f,0.0f, 0.0f},//0
-		{20.0f,0.0f, 0.0f},//1
-		{20.0f,0.0f, 20.0f},//2
-		{0.0f, 0.0f, 20.0f},//3
+		{10.0f,0.0f, 0.0f},//1
+		{10.0f,0.0f, 10.0f},//2
+		{0.0f, 0.0f, 10.0f},//3
 
-		{0.0f, 20.0f,0.0f},//4
-		{20.0f,20.0f,0.0f},//5
-		{20.0f,20.0f,20.0f},//6
-		{0.0f, 20.0f,20.0f},//7
+		{0.0f, 10.0f,0.0f},//4
+		{10.0f,10.0f,0.0f},//5
+		{10.0f,10.0f,10.0f},//6
+		{0.0f, 10.0f,10.0f},//7
 	};
 
 	int edgeList[12][2] = 
@@ -103,21 +105,55 @@ class GameScene {
 
 	Vector4 RED = {1.0f, 0.0f, 0.0f, 1.0f};
 
-	float afinTranslation[3][3] = {
-	  {1.0f, 0.0f, 100.0f}, //拡大、縮小率、X平行移動値
-	  {0.0f, 1.0f, 100.0f}, //回転(sin,cos)、Y平行移動値
-	  {0.0f, 0.0f, 1.0f  }
+	Vector4 BLACK = {0.0f, 0.0f, 0.0f, 1.0f};
+
+	Vector4 PURPLE = {1.0f, 0.0f, 1.0f, 1.0f};
+
+	Vector3 translationVertex[8] = {};
+	Vector3 scaleVertex[8] = {};
+	Vector3 rotaXVertex[8] = {};
+	Vector3 rotaYVertex[8] = {};
+	Vector3 rotaZVertex[8] = {};
+
+
+	float afinTranslation[4][4] =
+	{
+	  {1.0f, 0.0f, 0.0f, 10.0f},
+	  {0.0f, 1.0f, 0.0f, 10.0f},
+	  {0.0f, 0.0f, 1.0f, 10.0f},
+	  {0.0f, 0.0f, 0.0f, 1.0f},//Tx,Ty,Tz,1
     };
 
-	float afinScale[3][3] = {
-	 
+	float afinScale[4][4] = 
+	{
+		{2.0f,0.0f,0.0f,0.0f},//x軸
+		{0.0f,2.0f,0.0f,0.0f},//y軸
+		{0.0f,0.0f,2.0f,0.0f},//z軸
+		{0.0f,0.0f,0.0f,1.0f},//？
 	};
 
 	// 45度の回転
-	float afinRotation[3][3] = {
+	float afinRotationX[4][4] = 
+	{
+		{1.0f,0.0f, 0.0f, 0.0f}, //x = x
+		{0.0f,cos(PI/4),sin(PI/4),0.0f},// y=ycosΘ-zsinΘ
+		{0.0f,-sin(PI/4),cos(PI/4),0.0f},//z=ysinΘ+zcosΘ
+		{0.0f,0.0f,0.0f,1.0f},//
 	  
 	};
 
+	float afinRotationY[4][4] = {
+	  {cos(PI / 4),0.0f,-sin(PI / 4),0.0f},//x=xcosΘ+zsinΘ
+	  {0.0f,1.0f,0.0,0.0f},//y=y
+	  {sin(PI / 4),0.0f,cos(PI / 4),0.0f},//z=xsinΘ+zcosΘ
+	  {0.0f,0.0f,0.0f,1.0f},//
+	};
+	float afinRotationZ[4][4] = {
+	  {cos(PI / 4),sin(PI / 4),0.0f,0.0f},//x=cosΘ-ysinΘ
+	  {-sin(PI / 4),cos(PI / 4),0.0f,0.0f},//y=xsinΘ+ycosΘ
+	  {0.0f,0.0f,1.0f,0.0f},//z=z
+	  {0.0f,0.0f,0.0f,1.0f},//
+	};
 
 	/// <summary>
 	/// ゲームシーン用
