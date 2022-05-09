@@ -73,9 +73,28 @@ void GameScene::Draw() {
 	/// </summary>
 	////3Dモデルの描画
 	// model_->Draw(worldTransform_,viewProjection_,textureHandle_);
-	
-	//モデルとカメラの描画
-	 model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+	////モデルと連動させるカメラの描画
+	// model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+
+	//ラインの描画
+	//拡大された立方体の描画
+
+	for (int i = 0; i < _countof(edgeList); i++) {
+		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		  vertex[edgeList[i][0]], vertex[edgeList[i][1]], WHITE);
+		/*PrimitiveDrawer::GetInstance()->DrawLine3d(
+		  scaleVertex[edgeList[i][0]], scaleVertex[edgeList[i][1]], BLUE);
+		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		  rotaXVertex[edgeList[i][0]], rotaXVertex[edgeList[i][1]], RED);
+		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		  rotaYVertex[edgeList[i][0]], rotaYVertex[edgeList[i][1]], GREEN);
+		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		  rotaZVertex[edgeList[i][0]], rotaZVertex[edgeList[i][1]], BLACK);
+		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		  translationVertex[edgeList[i][0]], translationVertex[edgeList[i][1]], PURPLE);*/
+	}
+
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
