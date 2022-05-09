@@ -37,7 +37,62 @@ void GameScene::Initialize() {
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
-	
+		for (int i = 0; i < 8; i++) {
+		scaleVertex[i] = vertex[i];
+		rotaXVertex[i] = vertex[i];
+		rotaYVertex[i] = vertex[i];
+		rotaZVertex[i] = vertex[i];
+		translationVertex[i] = vertex[i];
+	}
+
+	//拡大
+	for (int i = 0; i < 8; i++) {
+		scaleVertex[i].x = afinScale[0][0] * vertex[i].x + afinScale[0][1] * vertex[i].y +
+		                   afinScale[0][2] * vertex[i].z + afinScale[0][3] * 1;
+		scaleVertex[i].y = afinScale[1][0] * vertex[i].x + afinScale[1][1] * vertex[i].y +
+		                   afinScale[1][2] * vertex[i].z + afinScale[1][3] * 1;
+		scaleVertex[i].z = afinScale[2][0] * vertex[i].x + afinScale[2][1] * vertex[i].y +
+		                   afinScale[2][2] * vertex[i].z + afinScale[2][3] * 1;
+	}
+	//
+	for (int i = 0; i < 8; i++) {
+		rotaXVertex[i].x = afinRotationX[0][0] * vertex[i].x + afinRotationX[0][1] * vertex[i].y +
+		                   afinRotationX[0][2] * vertex[i].z + afinRotationX[0][3] * 1;
+		rotaXVertex[i].y = afinRotationX[1][0] * vertex[i].x + afinRotationX[1][1] * vertex[i].y +
+		                   afinRotationX[1][2] * vertex[i].z + afinRotationX[1][3] * 1;
+		rotaXVertex[i].z = afinRotationX[2][0] * vertex[i].x + afinRotationX[2][1] * vertex[i].y +
+		                   afinRotationX[2][2] * vertex[i].z + afinRotationX[2][3] * 1;
+	}
+
+	for (int i = 0; i < 8; i++) {
+		rotaYVertex[i].x = afinRotationY[0][0] * vertex[i].x + afinRotationY[0][1] * vertex[i].y +
+		                   afinRotationY[0][2] * vertex[i].z + afinRotationY[0][3] * 1;
+		rotaYVertex[i].y = afinRotationY[1][0] * vertex[i].x + afinRotationY[1][1] * vertex[i].y +
+		                   afinRotationY[1][2] * vertex[i].z + afinRotationY[1][3] * 1;
+		rotaYVertex[i].z = afinRotationY[2][0] * vertex[i].x + afinRotationY[2][1] * vertex[i].y +
+		                   afinRotationY[2][2] * vertex[i].z + afinRotationY[2][3] * 1;
+	}
+
+	for (int i = 0; i < 8; i++) {
+		rotaZVertex[i].x = afinRotationZ[0][0] * vertex[i].x + afinRotationZ[0][1] * vertex[i].y +
+		                   afinRotationZ[0][2] * vertex[i].z + afinRotationZ[0][3] * 1;
+		rotaZVertex[i].y = afinRotationZ[1][0] * vertex[i].x + afinRotationZ[1][1] * vertex[i].y +
+		                   afinRotationZ[1][2] * vertex[i].z + afinRotationZ[1][3] * 1;
+		rotaZVertex[i].z = afinRotationZ[2][0] * vertex[i].x + afinRotationZ[2][1] * vertex[i].y +
+		                   afinRotationZ[2][2] * vertex[i].z + afinRotationZ[2][3] * 1;
+	}
+
+	for (int i = 0; i < 8; i++) {
+		translationVertex[i].x = afinTranslation[0][0] * vertex[i].x +
+		                         afinTranslation[0][1] * vertex[i].y +
+		                         afinTranslation[0][2] * vertex[i].z + afinTranslation[0][3] * 1;
+		translationVertex[i].y = afinTranslation[1][0] * vertex[i].x +
+		                         afinTranslation[1][1] * vertex[i].y +
+		                         afinTranslation[1][2] * vertex[i].z + afinTranslation[1][3] * 1;
+		translationVertex[i].z = afinTranslation[2][0] * vertex[i].x +
+		                         afinTranslation[2][1] * vertex[i].y +
+		                         afinTranslation[2][2] * vertex[i].z + afinTranslation[2][3] * 1;
+	}
 }
 
 void GameScene::Update() {
