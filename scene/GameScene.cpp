@@ -22,12 +22,6 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	reticleHandle_ = TextureManager::Load("reticle.png");
 
-	//X,Y,Z方向のスケーリングを設定
-	worldTransform_.scale_ = {2.0,2.0,2.0};
-
-	//スケーリング行列を設定
-	Matrix4
-
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
