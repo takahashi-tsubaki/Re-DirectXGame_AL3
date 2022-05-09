@@ -137,7 +137,7 @@ void GameScene::Draw() {
 	for (int i = 0; i < _countof(edgeList); i++) {
 		PrimitiveDrawer::GetInstance()->DrawLine3d(
 		  vertex[edgeList[i][0]], vertex[edgeList[i][1]], WHITE);
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
+		/*PrimitiveDrawer::GetInstance()->DrawLine3d(
 		  scaleVertex[edgeList[i][0]], scaleVertex[edgeList[i][1]], BLUE);
 		PrimitiveDrawer::GetInstance()->DrawLine3d(
 		  rotaXVertex[edgeList[i][0]], rotaXVertex[edgeList[i][1]], RED);
@@ -146,7 +146,7 @@ void GameScene::Draw() {
 		PrimitiveDrawer::GetInstance()->DrawLine3d(
 		  rotaZVertex[edgeList[i][0]], rotaZVertex[edgeList[i][1]], BLACK);
 		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		  translationVertex[edgeList[i][0]], translationVertex[edgeList[i][1]], PURPLE);
+		  translationVertex[edgeList[i][0]], translationVertex[edgeList[i][1]], PURPLE);*/
 	}
 
 	// 3Dオブジェクト描画後処理
