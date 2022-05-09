@@ -107,7 +107,7 @@ class GameScene {
 
 	Vector4 BLACK = {0.0f, 0.0f, 0.0f, 1.0f};
 
-	Vector4 PURPLE = {1.0f, 0.0f, 1.0f, 1.0f};
+	Vector4 PINK = {1.0f, 0.0f, 1.0f, 1.0f};
 
 	Vector3 translationVertex[8] = {};
 	Vector3 scaleVertex[8] = {};
