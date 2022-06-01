@@ -1,21 +1,22 @@
 #pragma once
-#include "Model.h"
-#include "WorldTransform.h"
-#include "ViewProjection.h"
 #include "DebugText.h"
 #include "Input.h"
+#include "Model.h"
+#include "WorldTransform.h"
 #include <cassert>
-class Player 
-{
-public:
+class Player {
+  public:
+	Player();
 	//
-  void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, uint32_t textureHandle);
 	//
 	void Update();
 	//
-	void Draw(ViewProjection viewProjection_);
+	void Draw(ViewProjection viewProjection);
 
-private:
+	float Translate();
+
+  private:
 	//
 	WorldTransform worldTransform_;
 	//

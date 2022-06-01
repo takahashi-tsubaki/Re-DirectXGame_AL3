@@ -8,7 +8,8 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
-	delete player;
+	
+
 	delete debugCamera_;
 }
 
@@ -28,19 +29,18 @@ void GameScene::Initialize() {
 
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
-
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	//デバックカメラの生成
-	debugCamera_ = new DebugCamera(1280, 720);
+	////デバックカメラの生成
+	//debugCamera_ = new DebugCamera(1280, 720);
 
-	//軸方向表示の有効化
-	AxisIndicator::GetInstance()->SetVisible(true);
-	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
-	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
-	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
+	////軸方向表示の有効化
+	//AxisIndicator::GetInstance()->SetVisible(true);
+	////軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
+	//AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
+	////ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
+	//PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
 	
 }
@@ -48,9 +48,8 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 	player->Update();
-
 	//デバックカメラの更新
-	debugCamera_->Update();
+	/*debugCamera_->Update();*/
 }
 
 void GameScene::Draw() {
@@ -82,6 +81,7 @@ void GameScene::Draw() {
 	////3Dモデルの描画
 	// model_->Draw(worldTransform_,viewProjection_,textureHandle_);
 	////モデルと連動させるカメラの描画
+	
 	//model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 	
 	player->Draw(viewProjection_);
