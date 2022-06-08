@@ -35,13 +35,11 @@ void GameScene::Initialize() {
 
 	//乱数角用の乱数範囲の設定
 	std::uniform_real_distribution<float> rot(0.0f, 6.28f);
-	//乱数エンジンを渡し、指定範囲からランダムな数値を得る
-	float rotate = rot(engine);
-
+	
 	//座標用の乱数範囲の設定
 	std::uniform_real_distribution<float> pos(-10.0f, 10.0f);
-	//乱数エンジンを渡し、指定範囲からランダムな数値を得る
-	float position = pos(engine);
+
+	
 
 	Matrix4 matScale;
 
@@ -51,15 +49,24 @@ void GameScene::Initialize() {
 
 	Matrix4 matTrans = MathUtility::Matrix4Identity();
 
-	for (int i = 0; i < 100;i++) {
-		//ワールドトランスフォームの初期化
-		worldTransforms_[i].Initialize();
-		// X,Y,Z方向のスケーリングを設定
-		worldTransforms_[i].scale_ = {1.0, 1.0, 1.0};
-		//　X,Y,Z軸周りの回転角を設定
-		worldTransforms_[i].rotation_ = {rotate, rotate, rotate};
+	for (WorldTransform& worldTransform : worldTransforms_) {
+		
+		//乱数エンジンを渡し、指定範囲からランダムな数値を得る
+		float rotate = rot(engine);
 
-		worldTransforms_[i].translation_ = {position, position, position};
+		//乱数エンジンを渡し、指定範囲からランダムな数値を得る
+		float positionX = pos(engine);
+		float positionY = pos(engine);
+		float positionZ = pos(engine);
+
+		//ワールドトランスフォームの初期化
+		worldTransform.Initialize();
+		// X,Y,Z方向のスケーリングを設定
+		worldTransform.scale_ = {1.0, 1.0, 1.0};
+		//　X,Y,Z軸周りの回転角を設定
+		worldTransform.rotation_ = {rotate, rotate, rotate};
+
+		worldTransform.translation_ = {positionX, positionY, positionZ};
 
 		//スケーリング倍率を行列に設定
 		matScale = {
@@ -98,25 +105,29 @@ void GameScene::Initialize() {
 		  1.0f, 0.0f, 0.0f, 0.0f,
 		  0.0f,  1.0f,0.0f, 0.0f,
 		  0.0f, 0.0f, 1.0f, 0.0f,
-		  position, position, position, 1.0f,
+		  positionX, positionY, positionZ, 1.0f,
 		};
 
 		//単位行列の代入
-		worldTransforms_[i].matWorld_ = {
+		worldTransform.matWorld_ = {
 		  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 		  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 		};
 
 		////掛け算して代入
-		worldTransforms_[i].matWorld_ *= matScale;
+		worldTransform.matWorld_ *= matScale;
 		//worldTransform.matWorld_ *= matRot;
-		worldTransforms_[i].matWorld_ *= matRotZ;
-		worldTransforms_[i].matWorld_ *= matRotX;
-		worldTransforms_[i].matWorld_ *= matRotY;
-		worldTransforms_[i].matWorld_ *= matTrans;
+		worldTransform.matWorld_ *= matRotZ;
+		worldTransform.matWorld_ *= matRotX;
+		worldTransform.matWorld_ *= matRotY;
+		worldTransform.matWorld_ *= matTrans;
 		//行列の転送
-		worldTransforms_[i].TransferMatrix();
+		worldTransform.TransferMatrix();
 	}
+
+
+	viewProjection_.target = {10.0f, 0.0f, 0.0f};
+	viewProjection_.up = {cosf(PI / 4.0f), sinf(PI/4.0f),0.0f};
 	//カメラ垂直方向視野角を設定
 
 	////アスペクト比を設定
@@ -127,6 +138,9 @@ void GameScene::Initialize() {
 
 	////ファークリップ距離を設定
 	//viewProjection_.farZ = 53.0f;
+	
+	
+	
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	//デバックカメラの生成
@@ -143,6 +157,45 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	//デバックカメラの更新
 	debugCamera_->Update();
+
+	/*Move(viewProjection_);*/
+	//視点ベクトル
+	Vector3 move = {0, 0, 0};
+
+	const float kEyeSpeed = 0.2f;
+
+	if (input_->PushKey(DIK_W)) {
+		move.z += kEyeSpeed;
+	}
+	if (input_->PushKey(DIK_S)) {
+		move.z -= kEyeSpeed;
+	}
+	viewProjection_.eye += move;
+
+	viewProjection_.UpdateMatrix();
+
+	//注視点ベクトル
+
+	const float kTargetSpeed = 0.2f;
+
+	if (input_->PushKey(DIK_A)) {
+		move.x -= kTargetSpeed;
+	}
+	if (input_->PushKey(DIK_D)) {
+		move.x += kTargetSpeed;
+	}
+	viewProjection_.target += move;
+
+	viewProjection_.UpdateMatrix();
+
+	//
+	const float kUpRotSpeed = 0.05f;
+	if (input_->PushKey(DIK_SPACE)) {
+		viewAngle += kUpRotSpeed;
+		//2π
+		viewAngle = fmodf(viewAngle,PI *2.0f);
+	}
+	viewProjection_.up = {cosf(viewAngle), sinf(viewAngle), 0.0f};
 }
 
 void GameScene::Draw() {
@@ -178,16 +231,15 @@ void GameScene::Draw() {
 	{
 		model_->Draw(worldTransform, debugCamera_->GetViewProjection(), textureHandle_);
 	}*/
-	for (int i = 0; i < 100; i++)
-	{
-		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
-	}
-	/*for (WorldTransform& worldTransform : worldTransforms_)
+	//for (int i = 0; i < 100; i++)
+	//{
+	//	model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
+	//}
+	for (WorldTransform& worldTransform : worldTransforms_)
 	{
 		model_->Draw(worldTransform, viewProjection_, textureHandle_);
-	}*/
-	//ラインの描画
-	//拡大された立方体の描画
+	}
+	
 
 
 
@@ -211,3 +263,20 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+//void GameScene::Move(ViewProjection viewProjection) 
+//{
+//	//視点ベクトル
+//	Vector3 move = {0,0,0};
+//
+//	const float kEyeSpeed = 0.2f;
+//
+//	if (input_->PushKey(DIK_W)) {
+//		move.z += kEyeSpeed;
+//	}
+//	if (input_->PushKey(DIK_S)) {
+//		move.z -= kEyeSpeed;
+//	}
+//	viewProjection.eye += move;
+//
+//	viewProjection.UpdateMatrix();
+//}
