@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "WinApp.h"
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "DebugText.h"
@@ -42,6 +42,12 @@ class GameScene {
 	/// 描画
 	/// </summary>
 	void Draw();
+
+  /// <summary>
+  /// アフィン変換
+  /// </summary>
+	void changeAffin();
+
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
