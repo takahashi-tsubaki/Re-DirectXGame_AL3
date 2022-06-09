@@ -3,6 +3,8 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <random>
+#include "math.h"
 
 GameScene::GameScene() {}
 
@@ -22,57 +24,121 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	reticleHandle_ = TextureManager::Load("reticle.png");
 
-	//ワールドトランスフォームの初期化
-	worldTransform_.Initialize();
-	// X,Y,Z方向のスケーリングを設定
-	worldTransform_.scale_ = {5.0, 2.0, 5.0};
-	//　X,Y,Z軸周りの回転角を設定
-	worldTransform_.rotation_ = {0.0f,45.0f,0.0f};
+	//ランダムシード生成器
+	std::random_device seed_gen;
+	//メルセンヌ・ツイスター
+	std::mt19937_64 engine(seed_gen());
+	////乱数範囲の指定                              最小値   最大値
+	//std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
+	////乱数エンジンを渡し、指定範囲からランダムな数値を得る
+	//float value = dist(engine);
 
-	worldTransform_.translation_ = {10,10,10};
-
+	//乱数角用の乱数範囲の設定
+	std::uniform_real_distribution<float> rot(0.0f, 6.28f);
+	
+	//座標用の乱数範囲の設定
+	std::uniform_real_distribution<float> pos(-10.0f, 10.0f);
 
 	Matrix4 matScale;
 
-	Matrix4 matRotY;
+	Matrix4 matRot;
+
+	Matrix4 matRotX, matRotY, matRotZ;
 
 	Matrix4 matTrans = MathUtility::Matrix4Identity();
 
+	for (WorldTransform& worldTransform : worldTransforms_) {
+		
+		//乱数エンジンを渡し、指定範囲からランダムな数値を得る
+		float rotate = rot(engine);
+
+		//乱数エンジンを渡し、指定範囲からランダムな数値を得る
+		float positionX = pos(engine);
+		float positionY = pos(engine);
+		float positionZ = pos(engine);
+
+		//ワールドトランスフォームの初期化
+		worldTransform.Initialize();
+		// X,Y,Z方向のスケーリングを設定
+		worldTransform.scale_ = {1.0, 1.0, 1.0};
+		//　X,Y,Z軸周りの回転角を設定
+		worldTransform.rotation_ = {rotate, rotate, rotate};
+
+		worldTransform.translation_ = {positionX, positionY, positionZ};
+
+		//スケーリング倍率を行列に設定
+		matScale = {
+		  1.0f, 0.0f, 0.0f, 0.0f, 
+		  0.0f, 1.0f, 0.0f, 0.0f,
+		  0.0f, 0.0f, 1.0f, 0.0f, 
+		  0.0f, 0.0f, 0.0f, 1.0f,
+		};
+
+		//回転行列の各要素を設定
+		matRotZ = {
+		  cos(rotate),  sin(rotate), 0.0f, 0.0f,
+		  -sin(rotate), cos(rotate), 0.0f, 0.0f,
+		  0.0f,         0.0f,        1.0f, 0.0f, 
+		  0.0f,         0.0f,        0.0f, 1.0f,
+
+		};
+		matRotX = {
+		  1.0f, 0.0f,  0.0f, 0.0f,
+		  0.0f,cos(rotate), sin(rotate),  0.0f,
+		  0.0f,-sin(rotate), cos(rotate), 0.0f,         
+		  0.0f, 0.0f,0.0f, 1.0f,
+
+		};
+		matRotY = {
+		  cos(rotate), 0.0f, -sin(rotate), 0.0f,
+		  0.0f, 1.0f, 0.0f, 0.0f,
+		  sin(rotate),0.0f,cos(rotate), 0.0f, 
+		  0.0f,0.0f, 0.0f, 1.0f,
+
+		};
+
+
+		//移動量を行列に設定
+		matTrans = {
+		  1.0f, 0.0f, 0.0f, 0.0f,
+		  0.0f,  1.0f,0.0f, 0.0f,
+		  0.0f, 0.0f, 1.0f, 0.0f,
+		  positionX, positionY, positionZ, 1.0f,
+		};
+
+		//単位行列の代入
+		worldTransform.matWorld_ = {
+		  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		};
+
+		////掛け算して代入
+		worldTransform.matWorld_ *= matScale;
+		//worldTransform.matWorld_ *= matRot;
+		worldTransform.matWorld_ *= matRotZ;
+		worldTransform.matWorld_ *= matRotX;
+		worldTransform.matWorld_ *= matRotY;
+		worldTransform.matWorld_ *= matTrans;
+		//行列の転送
+		worldTransform.TransferMatrix();
+	}
+
+
+	viewProjection_.target = {10.0f, 0.0f, 0.0f};
+	viewProjection_.up = {cosf(PI / 4.0f), sinf(PI/4.0f),0.0f};
+	//カメラ垂直方向視野角を設定
+
+	////アスペクト比を設定
+	//viewProjection_.aspectRatio = 1.0f;
+
+	////ニアクリップ距離を設定
+	//viewProjection_.nearZ = 52.0f;
+
+	////ファークリップ距離を設定
+	//viewProjection_.farZ = 53.0f;
 	
-	//スケーリング倍率を行列に設定
-	matScale = {
-	  5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f,
-	  0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-	};
-
-	//回転行列の各要素を設定
-	matRotY = {
-	  cos(PI / 4), 0.0f, -sin(PI / 4), 0.0f, 
-	  0.0f, 1.0f, 0.0,  0.0f,
-	  sin(PI / 4), 0.0f,cos(PI / 4), 0.0f,
-	  0.0f,0.0f, 0.0f, 1.0f,
-	};
-
-	//移動量を行列に設定
-	matTrans = {
-	  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-	  0.0f, 0.0f, 1.0f, 0.0f, 10.0f, 10.0f, 10.0f, 1.0f,
-	};
-
-
-	//単位行列の代入
-	worldTransform_.matWorld_ = {
-	  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-	  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-	};
-
-	//掛け算して代入
-	worldTransform_.matWorld_ *= matScale;
-	worldTransform_.matWorld_ *= matRotY;
-	worldTransform_.matWorld_ *= matTrans;
-	//行列の転送
-	worldTransform_.TransferMatrix();
-
+	
+	
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	//デバックカメラの生成
@@ -81,9 +147,7 @@ void GameScene::Initialize() {
 	//軸方向表示の有効化
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
-	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
-	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	
 }
@@ -91,6 +155,45 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	//デバックカメラの更新
 	debugCamera_->Update();
+
+	/*Move(viewProjection_);*/
+	//視点ベクトル
+	Vector3 move = {0, 0, 0};
+
+	const float kEyeSpeed = 0.2f;
+
+	if (input_->PushKey(DIK_W)) {
+		move.z += kEyeSpeed;
+	}
+	if (input_->PushKey(DIK_S)) {
+		move.z -= kEyeSpeed;
+	}
+	viewProjection_.eye += move;
+
+	viewProjection_.UpdateMatrix();
+
+	//注視点ベクトル
+
+	const float kTargetSpeed = 0.2f;
+
+	if (input_->PushKey(DIK_A)) {
+		move.x -= kTargetSpeed;
+	}
+	if (input_->PushKey(DIK_D)) {
+		move.x += kTargetSpeed;
+	}
+	viewProjection_.target += move;
+
+	viewProjection_.UpdateMatrix();
+
+	//
+	const float kUpRotSpeed = 0.05f;
+	if (input_->PushKey(DIK_SPACE)) {
+		viewAngle += kUpRotSpeed;
+		//2π
+		viewAngle = fmodf(viewAngle,PI *2.0f);
+	}
+	viewProjection_.up = {cosf(viewAngle), sinf(viewAngle), 0.0f};
 }
 
 void GameScene::Draw() {
@@ -122,25 +225,19 @@ void GameScene::Draw() {
 	////3Dモデルの描画
 	// model_->Draw(worldTransform_,viewProjection_,textureHandle_);
 	//モデルと連動させるカメラの描画
-	 model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
-
-	//ラインの描画
-	//拡大された立方体の描画
-
-	/*for (int i = 0; i < _countof(edgeList); i++) {
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		  vertex[edgeList[i][0]], vertex[edgeList[i][1]], WHITE);
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		  scaleVertex[edgeList[i][0]], scaleVertex[edgeList[i][1]], BLUE);
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		  rotaXVertex[edgeList[i][0]], rotaXVertex[edgeList[i][1]], RED);
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		  rotaYVertex[edgeList[i][0]], rotaYVertex[edgeList[i][1]], GREEN);
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		  rotaZVertex[edgeList[i][0]], rotaZVertex[edgeList[i][1]], BLACK);
-		PrimitiveDrawer::GetInstance()->DrawLine3d(
-		  translationVertex[edgeList[i][0]], translationVertex[edgeList[i][1]], PURPLE);
+	/*for (WorldTransform& worldTransform : worldTransforms_)
+	{
+		model_->Draw(worldTransform, debugCamera_->GetViewProjection(), textureHandle_);
 	}*/
+	//for (int i = 0; i < 100; i++)
+	//{
+	//	model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
+	//}
+	for (WorldTransform& worldTransform : worldTransforms_)
+	{
+		model_->Draw(worldTransform, viewProjection_, textureHandle_);
+	}
+	
 
 
 
@@ -164,3 +261,20 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+//void GameScene::Move(ViewProjection viewProjection) 
+//{
+//	//視点ベクトル
+//	Vector3 move = {0,0,0};
+//
+//	const float kEyeSpeed = 0.2f;
+//
+//	if (input_->PushKey(DIK_W)) {
+//		move.z += kEyeSpeed;
+//	}
+//	if (input_->PushKey(DIK_S)) {
+//		move.z -= kEyeSpeed;
+//	}
+//	viewProjection.eye += move;
+//
+//	viewProjection.UpdateMatrix();
+//}
