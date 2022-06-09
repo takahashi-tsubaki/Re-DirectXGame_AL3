@@ -98,8 +98,7 @@ void GameScene::changeAffin()
 {
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
-	// X,Y,Z方向のスケーリングを設定
-	worldTransform_.scale_ = {5.0, 2.0, 5.0};
+	
 	//　X,Y,Z軸周りの回転角を設定
 	worldTransform_.rotation_ = {0.0f, 45.0f, 0.0f};
 
