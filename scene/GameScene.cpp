@@ -39,8 +39,6 @@ void GameScene::Initialize() {
 	//座標用の乱数範囲の設定
 	std::uniform_real_distribution<float> pos(-10.0f, 10.0f);
 
-	
-
 	Matrix4 matScale;
 
 	Matrix4 matRot;
