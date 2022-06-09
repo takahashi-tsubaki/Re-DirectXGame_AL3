@@ -127,7 +127,8 @@ void GameScene::Initialize() {
 	viewProjection_.target = {10.0f, 0.0f, 0.0f};
 	viewProjection_.up = {cosf(PI / 4.0f), sinf(PI/4.0f),0.0f};
 	//カメラ垂直方向視野角を設定
-
+	
+	viewProjection_.fovAngleY = ConvertToRadians(10.0f,PI);
 	////アスペクト比を設定
 	//viewProjection_.aspectRatio = 1.0f;
 
@@ -194,6 +195,21 @@ void GameScene::Update() {
 		viewAngle = fmodf(viewAngle,PI *2.0f);
 	}
 	viewProjection_.up = {cosf(viewAngle), sinf(viewAngle), 0.0f};
+
+	//上キーで視野角が広がる
+	if (input_->PushKey(DIK_UP)) 
+	{
+		viewProjection_.fovAngleY += 0.01f;
+		viewProjection_.fovAngleY = max(viewProjection_.fovAngleY, PI);
+	}
+	else if (input_->PushKey(DIK_DOWN)) 
+	{
+		viewProjection_.fovAngleY -= 0.01f;
+		viewProjection_.fovAngleY = min(viewProjection_.fovAngleY, 0.01f);
+	}
+	//行列の再計算
+	viewProjection_.UpdateMatrix();
+
 }
 
 void GameScene::Draw() {
@@ -278,3 +294,9 @@ void GameScene::Draw() {
 //
 //	viewProjection.UpdateMatrix();
 //}
+float GameScene::ConvertToRadians(float fDegrees,float PI) noexcept {
+	return fDegrees * (PI / 180.0f);
+}
+float GameScene::ConvertToDegrees(float fRadians, float PI) noexcept {
+	return fRadians * (180.0f / PI);
+}
