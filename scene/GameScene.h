@@ -72,8 +72,8 @@ class GameScene {
 
 	float viewAngle = 0.0f;
 
-	float ConvertToRadians(float fDegrees, float PI) noexcept; 
-	float ConvertToDegrees(float fRadians, float PI) noexcept;
+	float ConvertToRadians(float fDegrees) noexcept; 
+	float ConvertToDegrees(float fRadians) noexcept;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
