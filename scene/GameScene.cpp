@@ -3,6 +3,7 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "affin/affin.h"
 
 GameScene::GameScene() {}
 
@@ -23,7 +24,27 @@ void GameScene::Initialize() {
 	reticleHandle_ = TextureManager::Load("reticle.png");
 
 	//アフィン変換関数
-	changeAffin();
+	//ワールドトランスフォームの初期化
+	worldTransform_.Initialize();
+	worldTransform_.scale_ = {5.0f, 2.0f, 5.0f};
+	//　X,Y,Z軸周りの回転角を設定
+	worldTransform_.rotation_ = {0.0f, 45.0f, 0.0f};
+
+	worldTransform_.translation_ = {10, 10, 10};
+
+	affin::AffinMat affinMat;
+
+	affin::SetMatScale(affinMat, worldTransform_);
+
+	affin::SetMatRot(affinMat, worldTransform_);
+
+	affin::SetMatTrans(affinMat, worldTransform_);
+	
+	//
+	affin::SetWorldMat(affinMat, worldTransform_);
+
+	//行列の転送
+	worldTransform_.TransferMatrix();
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -98,7 +119,7 @@ void GameScene::changeAffin()
 {
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
-	
+	worldTransform_.scale_ = {5.0f, 2.0f, 5.0f};
 	//　X,Y,Z軸周りの回転角を設定
 	worldTransform_.rotation_ = {0.0f, 45.0f, 0.0f};
 
