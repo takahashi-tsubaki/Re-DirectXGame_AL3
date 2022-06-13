@@ -68,10 +68,12 @@ class GameScene {
 
 	ViewProjection viewProjection_;
 
-	float PI = 3.141592f;
+	float PI = 3.141592654f;
 
 	float viewAngle = 0.0f;
 
+	float ConvertToRadians(float fDegrees) noexcept; 
+	float ConvertToDegrees(float fRadians) noexcept;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
