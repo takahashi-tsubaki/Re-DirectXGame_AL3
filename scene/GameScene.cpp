@@ -198,16 +198,11 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	////3Dモデルの描画
-	
-	/*model_->Draw(worldTransforms_[partId::kRoot], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[partId::kSpine], viewProjection_, textureHandle_);*/
-	model_->Draw(worldTransforms_[partId::kChest], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[partId::kHead], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[partId::kArmL], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[partId::kArmR], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[partId::kHip], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[partId::kLegL], viewProjection_, textureHandle_);
-	model_->Draw(worldTransforms_[partId::kLegR], viewProjection_, textureHandle_);
+
+	for (int i = partId::kChest; i <= partId::kLegR; i++)
+	{
+		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
