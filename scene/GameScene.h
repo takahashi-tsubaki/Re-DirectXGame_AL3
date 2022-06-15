@@ -18,6 +18,20 @@
 class GameScene {
 
   public: // メンバ関数
+
+	  enum partId
+	  {
+		kRoot,  //大元
+		kSpine, //脊髄
+		kChest, //胸
+		kHead,  //頭
+		kHip,   //ケツ
+		kArmL,  //左腕
+		kArmR,  //右腕
+		kLegL,  //左足
+		kLegR  //右足
+	  };
+
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
@@ -47,7 +61,9 @@ class GameScene {
   /// 
   /// </summary>
 
-	void Move(ViewProjection viewProjection_);
+	void UpdateMatrix(WorldTransform worldTransform_[8], int num,Vector3 move);
+
+	int Discrimination(int num);
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
