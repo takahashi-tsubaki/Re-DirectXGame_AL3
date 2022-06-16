@@ -30,8 +30,6 @@ void GameScene::Initialize() {
 	player = new Player();
 	player->Initialize(model_,textureHandle_);
 
-	//ワールドトランスフォームの初期化
-	worldTransform_.Initialize();
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
