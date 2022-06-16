@@ -12,7 +12,7 @@
 #include "DebugCamera.h"
 #include "math.h"
 
-#include "Player.h"
+#include "Player/Player.h"
 
 /// <summary>
 /// ゲームシーン
@@ -64,6 +64,9 @@ class GameScene {
 	WorldTransform worldTransform_;
 
 	ViewProjection viewProjection_;
+	ViewProjection debugViewProjection_;
+
+	bool isDebugCameraActive_ = false;
 
 	Player* player;
 

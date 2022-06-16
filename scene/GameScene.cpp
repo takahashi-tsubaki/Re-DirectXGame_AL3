@@ -50,6 +50,27 @@ void GameScene::Update() {
 	player->Update();
 	//デバックカメラの更新
 	/*debugCamera_->Update();*/
+#ifdef DEBUG
+	if (input_->TriggerKey(DIK_TAB)) 
+	{
+		if (isDebugCameraActive==false) {
+			isDebugCameraActive = true;
+		} 
+		else {
+			isDebugCameraActive = false;
+		}
+	}
+#endif // DEBUG
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		debugViewProjection_ = debugCamera_->GetViewProjection();
+		viewProjection_.matView = debugViewProjection_.matView;
+		viewProjection_.matProjection = debugViewProjection_.matProjection;
+		viewProjection_.UpdateMatrix();
+	} 
+	else {
+		viewProjection_.UpdateMatrix();
+	}
 }
 
 void GameScene::Draw() {
