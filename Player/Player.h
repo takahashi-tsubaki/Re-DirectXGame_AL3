@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include <cassert>
+#include "affin/affin.h"
 class Player {
   public:
 	Player();
@@ -14,7 +15,14 @@ class Player {
 	//
 	void Draw(ViewProjection viewProjection);
 
-	float Translate();
+	void Translate();
+
+	void matRotY();
+
+	void setWorldMat();
+
+	float ConvertToRadians(float fDegrees) noexcept ; 
+	float ConvertToDegrees(float fRadians) noexcept ; 
 
   private:
 	//
@@ -27,4 +35,9 @@ class Player {
 	Input* input_ = nullptr;
 	//
 	DebugText* debugText_ = nullptr;
+
+	const float PI = 3.141592654f;
+
+	Matrix4 mat;
+	affin::AffinMat affinMat;
 };
