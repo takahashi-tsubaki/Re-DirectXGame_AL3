@@ -66,7 +66,7 @@ class GameScene {
 	//
 	Sprite* sprite_ = nullptr;
 
-	WorldTransform worldTransforms_[100];
+	
 
 	ViewProjection viewProjection_;
 	ViewProjection debugViewProjection_;
