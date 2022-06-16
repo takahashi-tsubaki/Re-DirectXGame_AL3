@@ -3,6 +3,8 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <random>
+#include "math.h"
 
 GameScene::GameScene() {}
 
@@ -24,13 +26,16 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	reticleHandle_ = TextureManager::Load("reticle.png");
 
+
 	player = new Player();
 	player->Initialize(model_,textureHandle_);
 
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
+
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
+
 
 	////デバックカメラの生成
 	//debugCamera_ = new DebugCamera(1280, 720);
@@ -42,7 +47,6 @@ void GameScene::Initialize() {
 	////ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	//PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
-	
 }
 
 void GameScene::Update() {
@@ -50,6 +54,7 @@ void GameScene::Update() {
 	player->Update();
 	//デバックカメラの更新
 	/*debugCamera_->Update();*/
+
 #ifdef DEBUG
 	if (input_->TriggerKey(DIK_TAB)) 
 	{
@@ -71,6 +76,7 @@ void GameScene::Update() {
 	else {
 		viewProjection_.UpdateMatrix();
 	}
+
 }
 
 void GameScene::Draw() {
@@ -107,7 +113,6 @@ void GameScene::Draw() {
 	
 	player->Draw(viewProjection_);
 	
-
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
