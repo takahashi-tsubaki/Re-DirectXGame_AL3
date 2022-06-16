@@ -12,6 +12,8 @@
 #include "DebugCamera.h"
 #include "math.h"
 
+#include "Player/Player.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -67,13 +69,13 @@ class GameScene {
 	WorldTransform worldTransforms_[100];
 
 	ViewProjection viewProjection_;
+	ViewProjection debugViewProjection_;
 
-	float PI = 3.141592654f;
+	bool isDebugCameraActive_ = false;
 
-	float viewAngle = 0.0f;
+	Player* player;
 
-	float ConvertToRadians(float fDegrees) noexcept; 
-	float ConvertToDegrees(float fRadians) noexcept;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
