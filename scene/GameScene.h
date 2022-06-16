@@ -45,6 +45,12 @@ class GameScene {
 	/// </summary>
 	void Draw();
 
+  /// <summary>
+  /// 
+  /// </summary>
+
+	void Move(ViewProjection viewProjection_);
+
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -60,8 +66,7 @@ class GameScene {
 	//
 	Sprite* sprite_ = nullptr;
 
-
-	WorldTransform worldTransform_;
+	WorldTransform worldTransforms_[100];
 
 	ViewProjection viewProjection_;
 	ViewProjection debugViewProjection_;
@@ -69,6 +74,7 @@ class GameScene {
 	bool isDebugCameraActive_ = false;
 
 	Player* player;
+
 
 	/// <summary>
 	/// ゲームシーン用
