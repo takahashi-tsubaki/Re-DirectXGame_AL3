@@ -17,7 +17,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// X,Y,Z²ü‚è‚Ì•½sˆÚ“®‚ğİ’è
 	worldTransform_.translation_ = {};
 
-	//
 }
 
 void Player::Update() {
