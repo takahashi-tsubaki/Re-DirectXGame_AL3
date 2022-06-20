@@ -19,27 +19,18 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 }
 
 
-void Player::Update() {
-
 void Player::Update() 
 { 
-	Move(); 
-}
-
-void Player::Move() {
-
-	Vector3 move = {0, 0, 0};
+		Vector3 move = {0, 0, 0};
 
 	const float kCharaSpeed = 0.2f;
 
 	Matrix4 matTrans;
 
-	Matrix4 matTrans = MathUtility::Matrix4Identity();
-
 	worldTransform_.matWorld_ = {1, 0, 0, 0,  // x
-	                             0, 1, 0, 0,  // y
-	                             0, 0, 1, 0,  // z
-	                             0, 0, 0, 1}; // Tx,Ty,Tz
+								 0, 1, 0, 0,  // y
+								 0, 0, 1, 0,  // z
+								 0, 0, 0, 1}; // Tx,Ty,Tz
 
 	if (input_->PushKey(DIK_LEFT)) {
 
@@ -53,14 +44,8 @@ void Player::Move() {
 	}
 	if (input_->PushKey(DIK_DOWN)) {
 		move.y -= kCharaSpeed;
-		move = {-kCharaSpeed, 0, 0};
-	} else if (input_->PushKey(DIK_RIGHT)) {
-		move = {kCharaSpeed, 0, 0};
-	} else if (input_->PushKey(DIK_UP)) {
-		move = {0, kCharaSpeed, 0};
-	} else if (input_->PushKey(DIK_DOWN)) {
-		move = {0, -kCharaSpeed, 0};
-	}
+		
+	} 
 
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
@@ -86,7 +71,6 @@ void Player::Move() {
 
 	worldTransform_.matWorld_.operator*=(matRotY);
 
-	
 	const float kMoveLimitX = 36.0f;
 	const float kMoveLimitY = 19.0f;
 
@@ -101,15 +85,11 @@ void Player::Move() {
 
 	worldTransform_.TransferMatrix();
 
-
-
 	Attack();
-
 
 	if (bullet_) {
 		bullet_->Update();
 	}
-
 
 	debugText_->SetPos(20, 100);
 	debugText_->Printf(
@@ -121,6 +101,11 @@ void Player::Move() {
 	  "rotation : (%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y,
 	  worldTransform_.rotation_.z);
 }
+
+
+
+
+	
 void Player::Draw(ViewProjection viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	if (bullet_) {
