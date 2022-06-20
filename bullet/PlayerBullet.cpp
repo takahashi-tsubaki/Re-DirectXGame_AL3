@@ -16,7 +16,8 @@ void PlayerBullet::Init(Model* model, const Vector3& position) {
 	affinMat.translate = affin::generateTransMat(worldTransform_);
 }
 //XVˆ—
-void PlayerBullet::Update() {
+void PlayerBullet::Update() 
+{
 	worldTransform_.matWorld_ = MathUtility::Matrix4Identity();
 	affin::setTransformationWolrdMat(affinMat, worldTransform_);
 	worldTransform_.TransferMatrix();

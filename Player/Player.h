@@ -6,6 +6,8 @@
 #include "affin/affin.h"
 #include "bullet/PlayerBullet.h"
 #include <cassert>
+#include <memory>
+#include <list>
 class Player {
   public:
 	Player();
@@ -38,9 +40,8 @@ class Player {
 
 	const float PI = 3.141592654f;
 
-	Matrix4 mat;
 	affin::AffinMat affinMat;
 
-	//‹…
-	PlayerBullet* bullet_ = nullptr;
+	////‹…
+	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 };

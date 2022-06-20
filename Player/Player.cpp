@@ -82,21 +82,23 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	//
+	//関数の合成
 	affin::setTransformationWolrdMat(affinMat, worldTransform_);
 
+	//行列の転送
 	worldTransform_.TransferMatrix();
 
-
-
+	//攻撃関数
 	Attack();
 
-
-	if (bullet_) {
-		bullet_->Update();
+	//球の更新
+	for (std::unique_ptr<PlayerBullet>&bullet : bullets_) 
+	{
+		bullet->Update();
 	}
 
 
+	//デバックテキスト
 	debugText_->SetPos(20, 100);
 	debugText_->Printf(
 	  "translation : (%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y,
@@ -107,10 +109,15 @@ void Player::Update() {
 	  "rotation : (%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y,
 	  worldTransform_.rotation_.z);
 }
-void Player::Draw(ViewProjection viewProjection) {
+//描画処理
+void Player::Draw(ViewProjection viewProjection) 
+{
+	//プレイヤーの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	if (bullet_) {
-		bullet_->Draw(viewProjection);
+	//球の描画
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) 
+	{
+		bullet->Draw(viewProjection);
 	}
 
 }
@@ -119,12 +126,15 @@ float Player::ConvertToRadians(float fDegrees) noexcept { return fDegrees * (PI 
 float Player::ConvertToDegrees(float fRadians) noexcept { return fRadians * (180.0f / PI); }
 
 void Player::Attack() {
-	if (input_->PushKey(DIK_SPACE)) {
-	
-		PlayerBullet* newBullet = new PlayerBullet();
+	if (input_->PushKey(DIK_SPACE)) 
+	{
+		//球の生成
+		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+
+		//球の初期化
 		newBullet->Init(model_, worldTransform_.translation_);
 
-	
-		bullet_ = newBullet;
+		//球の登録
+		bullets_.push_back(std::move(newBullet));
 	}
 }
