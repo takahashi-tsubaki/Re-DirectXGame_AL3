@@ -22,20 +22,11 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 void Player::Update() {
 
-void Player::Update() 
-{ 
-	Move(); 
-}
-
-void Player::Move() {
-
 	Vector3 move = {0, 0, 0};
 
 	const float kCharaSpeed = 0.2f;
 
 	Matrix4 matTrans;
-
-	Matrix4 matTrans = MathUtility::Matrix4Identity();
 
 	worldTransform_.matWorld_ = {1, 0, 0, 0,  // x
 	                             0, 1, 0, 0,  // y
@@ -54,14 +45,8 @@ void Player::Move() {
 	}
 	if (input_->PushKey(DIK_DOWN)) {
 		move.y -= kCharaSpeed;
-		move = {-kCharaSpeed, 0, 0};
-	} else if (input_->PushKey(DIK_RIGHT)) {
-		move = {kCharaSpeed, 0, 0};
-	} else if (input_->PushKey(DIK_UP)) {
-		move = {0, kCharaSpeed, 0};
-	} else if (input_->PushKey(DIK_DOWN)) {
-		move = {0, -kCharaSpeed, 0};
-	}
+	
+	} 
 
 	worldTransform_.translation_.x += move.x;
 	worldTransform_.translation_.y += move.y;
