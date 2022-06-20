@@ -14,6 +14,8 @@ class Player {
 	//
 	void Update();
 	//
+	void Move();
+	//
 	void Draw(ViewProjection viewProjection);
 
 	float ConvertToRadians(float fDegrees) noexcept;
