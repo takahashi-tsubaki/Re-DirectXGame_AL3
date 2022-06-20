@@ -38,7 +38,6 @@ class Player {
 
 	const float PI = 3.141592654f;
 
-	Matrix4 mat;
 	affin::AffinMat affinMat;
 
 	//‹…
