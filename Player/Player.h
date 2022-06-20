@@ -3,8 +3,9 @@
 #include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
-#include <cassert>
 #include "affin/affin.h"
+#include "bullet/PlayerBullet.h"
+#include <cassert>
 class Player {
   public:
 	Player();
@@ -15,14 +16,11 @@ class Player {
 	//
 	void Draw(ViewProjection viewProjection);
 
-	void Translate();
+	float ConvertToRadians(float fDegrees) noexcept;
+	float ConvertToDegrees(float fRadians) noexcept;
 
-	void matRotY();
-
-	void setWorldMat();
-
-	float ConvertToRadians(float fDegrees) noexcept ; 
-	float ConvertToDegrees(float fRadians) noexcept ; 
+	//çUåÇ
+	void Attack();
 
   private:
 	//
@@ -40,4 +38,7 @@ class Player {
 
 	Matrix4 mat;
 	affin::AffinMat affinMat;
+
+	//ãÖ
+	PlayerBullet* bullet_ = nullptr;
 };

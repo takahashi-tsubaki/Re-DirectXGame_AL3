@@ -1,10 +1,6 @@
 #include "Player.h"
-Player::Player() 
-{
-
-}
-void Player::Initialize(Model*model,uint32_t textureHandle) 
-{ 
+Player::Player() {}
+void Player::Initialize(Model* model, uint32_t textureHandle) {
 	assert(model);
 
 	model_ = model;
@@ -22,35 +18,29 @@ void Player::Initialize(Model*model,uint32_t textureHandle)
 	worldTransform_.translation_ = {};
 
 	//
-	//‰ñ“]ŠÖ”‚ÌÝ’è
-	affin::setRotateMat(affinMat, worldTransform_);
-	//•½sˆÚ“®ŠÖ”‚ÌÝ’è
-	affin::setTranslateMat(affinMat.translate, worldTransform_);
 }
 
-void Player::Update() { 
+void Player::Update() {
 	Vector3 move = {0, 0, 0};
 
 	const float kCharaSpeed = 0.2f;
 
-	Matrix4 matTrans = MathUtility::Matrix4Identity();
-	
+	Matrix4 matTrans;
+
 	worldTransform_.matWorld_ = {1, 0, 0, 0,  // x
 	                             0, 1, 0, 0,  // y
 	                             0, 0, 1, 0,  // z
 	                             0, 0, 0, 1}; // Tx,Ty,Tz
 
-	if (input_->PushKey(DIK_LEFT)) 
-	{
+	if (input_->PushKey(DIK_LEFT)) {
 		move.x -= kCharaSpeed;
 	}
-	if (input_->PushKey(DIK_RIGHT))
-	{
+	if (input_->PushKey(DIK_RIGHT)) {
 		move.x += kCharaSpeed;
-	} 
+	}
 	if (input_->PushKey(DIK_UP)) {
 		move.y += kCharaSpeed;
-	} 
+	}
 	if (input_->PushKey(DIK_DOWN)) {
 		move.y -= kCharaSpeed;
 	}
@@ -59,34 +49,21 @@ void Player::Update() {
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
 
-	matTrans.m[3][0] = worldTransform_.translation_.x;
-	matTrans.m[3][1] = worldTransform_.translation_.y;
-	matTrans.m[3][2] = worldTransform_.translation_.z;
+	matTrans = affin::generateTransMat(worldTransform_);
 
-	
-	
-	
-	Vector3 Rotation = {0,0,0};
+	Vector3 Rotation = {0, 0, 0};
 	const float kCharaRotY = ConvertToRadians(1.0f);
 
-	Matrix4 matRotY = MathUtility::Matrix4Identity();
+	Matrix4 matRotY;
 
-	if (input_->PushKey(DIK_U)) 
-	{
+	if (input_->PushKey(DIK_U)) {
 		worldTransform_.rotation_.y += kCharaRotY;
 	}
 	if (input_->PushKey(DIK_I)) {
 		worldTransform_.rotation_.y -= kCharaRotY;
 	}
 
-
-	worldTransform_.rotation_.x += Rotation.x;
-	worldTransform_.rotation_.z += Rotation.z;
-
-	matRotY.m[0][0] = cos(worldTransform_.rotation_.y);
-	matRotY.m[0][2] = -sin(worldTransform_.rotation_.y);
-	matRotY.m[2][0] = sin(worldTransform_.rotation_.y);
-	matRotY.m[2][2] = cos(worldTransform_.rotation_.y);
+	matRotY = affin::generateRotateYMat(worldTransform_);
 
 	worldTransform_.matWorld_.operator*=(matTrans);
 	worldTransform_.matWorld_.operator*=(matRotY);
@@ -101,10 +78,21 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
+	//
+	affin::setTransformationWolrdMat(affinMat, worldTransform_);
+
 	//s—ñ‚ÌXV
 	worldTransform_.TransferMatrix();
 
-	debugText_->SetPos(20,100);
+	//UŒ‚ŠÖ”
+	Attack();
+
+	//‹…‚ÌXV
+	if (bullet_) {
+		bullet_->Update();
+	}
+
+	debugText_->SetPos(20, 100);
 	debugText_->Printf(
 	  "translation : (%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y,
 	  worldTransform_.translation_.z);
@@ -112,50 +100,24 @@ void Player::Update() {
 	debugText_->Printf(
 	  "rotation : (%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y,
 	  worldTransform_.rotation_.z);
-
 }
-void Player::Draw(ViewProjection viewProjection) 
-{
+void Player::Draw(ViewProjection viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
 }
 
-void Player::matRotY() 
-{
-	const float kCharaRotY = ConvertToRadians(0.1f);
-	if (input_->PushKey(DIK_U)) {
-		worldTransform_.rotation_.y += kCharaRotY;
-	}
-	if (input_->PushKey(DIK_I)) {
-		worldTransform_.rotation_.y -= kCharaRotY;
-		
-	}
-	affin::generateRotateYMat(worldTransform_);
-}	
+float Player::ConvertToRadians(float fDegrees) noexcept { return fDegrees * (PI / 180.0f); }
+float Player::ConvertToDegrees(float fRadians) noexcept { return fRadians * (180.0f / PI); }
 
-void Player::Translate() { 
-	Vector3 move = {0, 0, 0};
-	const float kCharaSpeed = 0.2f;
-	if (input_->PushKey(DIK_LEFTARROW)) 
-	{
-		worldTransform_.translation_.x -= kCharaSpeed;
+void Player::Attack() {
+	if (input_->PushKey(DIK_SPACE)) {
+		//‹…‚ð¶¬‚µA‰Šú‰»
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Init(model_, worldTransform_.translation_);
+
+		//‹…‚ð“o˜^‚·‚é
+		bullet_ = newBullet;
 	}
-	if (input_->PushKey(DIK_RIGHTARROW)) {
-		worldTransform_.translation_.x += kCharaSpeed;
-	}
-	affin::generateTransMat(worldTransform_);
-}
-
-void Player::setWorldMat()
-{ 
-	affin::setTransformationWolrdMat(affinMat,worldTransform_ );
-}
-
-
-float Player::ConvertToRadians(float fDegrees) noexcept 
-{
-	return fDegrees * (PI / 180.0f); 
-}
-float Player::ConvertToDegrees(float fRadians) noexcept 
-{
-	return fRadians * (180.0f / PI);
 }

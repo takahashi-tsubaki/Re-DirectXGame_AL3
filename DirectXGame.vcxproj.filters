@@ -61,6 +61,12 @@
     <Filter Include="ヘッダー ファイル\affin">
       <UniqueIdentifier>{af9add6e-2c7f-48c4-a41d-0daba48ef399}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\bullet">
+      <UniqueIdentifier>{d43b0ba3-7590-4c90-88a6-7231595aed15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\bullet">
+      <UniqueIdentifier>{6a2058b6-e59b-4d19-8093-dd86c3df0b4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -83,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="Player\Player.cpp">
       <Filter>ソース ファイル\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet\PlayerBullet.cpp">
+      <Filter>ソース ファイル\bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="Player\Player.h">
       <Filter>ヘッダー ファイル\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet\PlayerBullet.h">
+      <Filter>ヘッダー ファイル\bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
