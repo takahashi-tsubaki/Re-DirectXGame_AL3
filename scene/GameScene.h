@@ -73,8 +73,6 @@ class GameScene {
 
 	Player* player;
 
-	affin::AffinMat affinMat;
-
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
