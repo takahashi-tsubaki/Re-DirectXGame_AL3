@@ -25,6 +25,8 @@ class Player {
 
 	//UŒ‚
 	void Attack();
+	//ƒLƒƒƒ‰‚ÌŒü‚«‚É‰‚¶‚½•ûŒü‚É‹…‚ğo‚·
+	Vector3 bVelocity(Vector3& velocity, WorldTransform& worldTransform);
 
   private:
 	//

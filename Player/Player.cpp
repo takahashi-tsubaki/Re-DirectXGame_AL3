@@ -22,6 +22,12 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 void Player::Update() {
 
+	//デスフラグが立った球を削除
+	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) 
+	{ 
+			return bullet->isDead();
+	});
+
 	Vector3 move = {0, 0, 0};
 
 	const float kCharaSpeed = 0.2f;
@@ -57,7 +63,7 @@ void Player::Update() {
 
 #pragma region 回転処理
 	Vector3 Rotation = {0, 0, 0};
-	const float kCharaRotY = ConvertToRadians(1.0f);
+	const float kCharaRotY = ConvertToRadians(0.5f);
 
 	Matrix4 matRotY;
 
@@ -72,6 +78,7 @@ void Player::Update() {
 	if (worldTransform_.rotation_.y >= (PI * 2) || worldTransform_.rotation_.y <= -(PI * 2)) {
 		worldTransform_.rotation_.y = 0;
 	}
+	
 
 	matRotY = affin::generateRotateYMat(worldTransform_);
 #pragma endregion
@@ -90,7 +97,7 @@ void Player::Update() {
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
 	//関数の合成
-	/*affin::setTransformationWolrdMat(affinMat, worldTransform_);*/
+	affin::setTransformationWolrdMat(affinMat, worldTransform_);
 
 	//行列の転送
 	worldTransform_.TransferMatrix();
@@ -103,7 +110,7 @@ void Player::Update() {
 	{
 		bullet->Update();
 	}
-
+	
 
 	//デバックテキスト
 	debugText_->SetPos(20, 100);
@@ -135,13 +142,41 @@ float Player::ConvertToDegrees(float fRadians) noexcept { return fRadians * (180
 void Player::Attack() {
 	if (input_->PushKey(DIK_SPACE)) 
 	{
+		//球の速度
+		const float kBulletSpeed = 0.5f;
+
+		Vector3 velocity(0, 0, kBulletSpeed);
+
+		//速度ベクトルを自機の向きに合わせて回転させる
+		velocity = bVelocity(velocity, worldTransform_);
+
 		//球の生成
 		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
 
 		//球の初期化
-		newBullet->Init(model_, worldTransform_.translation_);
+		newBullet->Init(model_, worldTransform_.translation_,velocity);
 
 		//球の登録
 		bullets_.push_back(std::move(newBullet));
 	}
+}
+
+Vector3 Player::bVelocity(Vector3& velocity, WorldTransform& worldTransform) {
+	
+	Vector3 result = {0,0,0};
+
+	//内積
+	result.z = velocity.x * worldTransform.matWorld_.m[0][2] +
+	           velocity.y * worldTransform.matWorld_.m[1][2] +
+	           velocity.z * worldTransform.matWorld_.m[2][2];
+
+	result.x = velocity.x * worldTransform.matWorld_.m[0][0] +
+	           velocity.y * worldTransform.matWorld_.m[1][0] +
+	           velocity.z * worldTransform.matWorld_.m[2][0];
+
+	result.y = velocity.x * worldTransform.matWorld_.m[0][1] +
+	           velocity.y * worldTransform.matWorld_.m[1][1] +
+	           velocity.z * worldTransform.matWorld_.m[2][1];
+
+	return result;
 }
