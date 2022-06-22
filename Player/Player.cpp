@@ -25,7 +25,7 @@ void Player::Update() {
 	Vector3 move = {0, 0, 0};
 
 	const float kCharaSpeed = 0.2f;
-
+	
 	Matrix4 matTrans;
 
 	worldTransform_.matWorld_ = {1, 0, 0, 0,  // x
@@ -34,7 +34,6 @@ void Player::Update() {
 	                             0, 0, 0, 1}; // Tx,Ty,Tz
 
 	if (input_->PushKey(DIK_LEFT)) {
-
 		move.x -= kCharaSpeed;
 	}
 	if (input_->PushKey(DIK_RIGHT)) {
@@ -65,13 +64,15 @@ void Player::Update() {
 	if (input_->PushKey(DIK_I)) {
 		worldTransform_.rotation_.y -= kCharaRotY;
 	}
+	if (worldTransform_.rotation_.y >= (PI * 2) || worldTransform_.rotation_.y <= -(PI * 2)) {
+		worldTransform_.rotation_.y = 0;
+	}
 
 	matRotY = affin::generateRotateYMat(worldTransform_);
 
-	worldTransform_.matWorld_.operator*=(matTrans);
-
 	worldTransform_.matWorld_.operator*=(matRotY);
 
+	worldTransform_.matWorld_.operator*=(matTrans);
 	
 	const float kMoveLimitX = 36.0f;
 	const float kMoveLimitY = 19.0f;
