@@ -32,17 +32,18 @@ void Player::Update() {
 	                             0, 1, 0, 0,  // y
 	                             0, 0, 1, 0,  // z
 	                             0, 0, 0, 1}; // Tx,Ty,Tz
-
-	if (input_->PushKey(DIK_LEFT)) {
+#pragma region ˆÚ“®ˆ—
+	//ˆÚ“®ˆ—
+	if (input_->PushKey(DIK_A)) {
 		move.x -= kCharaSpeed;
 	}
-	if (input_->PushKey(DIK_RIGHT)) {
+	if (input_->PushKey(DIK_D)) {
 		move.x += kCharaSpeed;
 	}
-	if (input_->PushKey(DIK_UP)) {
+	if (input_->PushKey(DIK_W)) {
 		move.y += kCharaSpeed;
 	}
-	if (input_->PushKey(DIK_DOWN)) {
+	if (input_->PushKey(DIK_S)) {
 		move.y -= kCharaSpeed;
 	
 	} 
@@ -52,23 +53,28 @@ void Player::Update() {
 	worldTransform_.translation_.z += move.z;
 
 	matTrans = affin::generateTransMat(worldTransform_);
+#pragma endregion
 
+#pragma region ‰ñ“]ˆ—
 	Vector3 Rotation = {0, 0, 0};
 	const float kCharaRotY = ConvertToRadians(1.0f);
 
 	Matrix4 matRotY;
 
+	//‰ñ“]ˆ—
 	if (input_->PushKey(DIK_U)) {
 		worldTransform_.rotation_.y += kCharaRotY;
 	}
 	if (input_->PushKey(DIK_I)) {
 		worldTransform_.rotation_.y -= kCharaRotY;
 	}
+	//(-)2ƒÎ‚ð’´‚¦‚½‚ç‰ñ“]Šp‚ð0‚É–ß‚·ˆ—
 	if (worldTransform_.rotation_.y >= (PI * 2) || worldTransform_.rotation_.y <= -(PI * 2)) {
 		worldTransform_.rotation_.y = 0;
 	}
 
 	matRotY = affin::generateRotateYMat(worldTransform_);
+#pragma endregion
 
 	worldTransform_.matWorld_.operator*=(matRotY);
 
@@ -84,7 +90,7 @@ void Player::Update() {
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
 	//ŠÖ”‚Ì‡¬
-	affin::setTransformationWolrdMat(affinMat, worldTransform_);
+	/*affin::setTransformationWolrdMat(affinMat, worldTransform_);*/
 
 	//s—ñ‚Ì“]‘—
 	worldTransform_.TransferMatrix();
