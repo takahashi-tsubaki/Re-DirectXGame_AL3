@@ -29,21 +29,21 @@ class Player {
 	Vector3 bVelocity(Vector3& velocity, WorldTransform& worldTransform);
 
   private:
-	//
+	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
-	//
+	//モデル
 	Model* model_ = nullptr;
-	//
+	//テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
-	//
+	//インプット
 	Input* input_ = nullptr;
-	//
+	//デバックテキスト
 	DebugText* debugText_ = nullptr;
 
 	const float PI = 3.141592654f;
-
+	//打ち出すまでの時間
 	float dalayTimer = 0.0f;
-
+	//Affin関数の構造体
 	affin::AffinMat affinMat;
 
 	////球
