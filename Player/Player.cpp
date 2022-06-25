@@ -122,6 +122,9 @@ void Player::Update() {
 	debugText_->Printf(
 	  "rotation : (%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y,
 	  worldTransform_.rotation_.z);
+	debugText_->SetPos(20,80);
+	debugText_->Printf("dalay : %f",dalayTimer );
+
 }
 //描画処理
 void Player::Draw(ViewProjection viewProjection) 
@@ -140,8 +143,11 @@ float Player::ConvertToRadians(float fDegrees) noexcept { return fDegrees * (PI 
 float Player::ConvertToDegrees(float fRadians) noexcept { return fRadians * (180.0f / PI); }
 
 void Player::Attack() {
-	if (input_->PushKey(DIK_SPACE)) 
+	if (input_->PushKey(DIK_SPACE))
 	{
+
+		dalayTimer-=0.1f;
+
 		//球の速度
 		const float kBulletSpeed = 0.5f;
 
@@ -150,14 +156,20 @@ void Player::Attack() {
 		//速度ベクトルを自機の向きに合わせて回転させる
 		velocity = bVelocity(velocity, worldTransform_);
 
-		//球の生成
-		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+		//クールタイムが０になったとき
+		if (dalayTimer <= 0) 
+		{
+			//球の生成
+			std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+			//球の初期化
+			newBullet->Init(model_, worldTransform_.translation_, velocity);
 
-		//球の初期化
-		newBullet->Init(model_, worldTransform_.translation_,velocity);
+			//球の登録
+			bullets_.push_back(std::move(newBullet));
 
-		//球の登録
-		bullets_.push_back(std::move(newBullet));
+			dalayTimer = 5.0f;
+		}
+		
 	}
 }
 

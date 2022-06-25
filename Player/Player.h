@@ -42,6 +42,8 @@ class Player {
 
 	const float PI = 3.141592654f;
 
+	float dalayTimer = 0.0f;
+
 	affin::AffinMat affinMat;
 
 	////‹…
