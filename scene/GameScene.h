@@ -13,6 +13,7 @@
 #include "math.h"
 
 #include "Player/Player.h"
+#include "enemy/Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -62,16 +63,23 @@ class GameScene {
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	uint32_t reticleHandle_ = 0;
+	uint32_t enemyHandle_ = 0;
 
-	//
+	//スプライト
 	Sprite* sprite_ = nullptr;
+
 
 	ViewProjection viewProjection_;
 	ViewProjection debugViewProjection_;
 
 	bool isDebugCameraActive_ = false;
+	
+	//自キャラ
+	Player* player_ = nullptr;
 
-	Player* player;
+	//敵キャラ
+	Enemy* enemy_ = nullptr;
+	
 
 	/// <summary>
 	/// ゲームシーン用
