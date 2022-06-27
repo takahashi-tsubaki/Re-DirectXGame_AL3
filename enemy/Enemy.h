@@ -9,12 +9,12 @@
 #include <list>
 class Enemy
 {
-	enum class Phase
-	{
+	enum class Phase {
 		None,
-		Approach,//接近する
-		Leave,   //離脱する
+		Approach, //接近する
+		Leave,    //離脱する
 	};
+
 public:
 	/// <summary>
 	/// 生成
@@ -66,4 +66,7 @@ private:
 	//敵の行動パターン
 	Phase phase_ = Phase::None;
 
+	//メンバ関数ポインタ
+	static void (Enemy::*spFuncTable[])();
+	
 };

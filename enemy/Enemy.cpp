@@ -12,6 +12,12 @@ void Enemy::Init(Model* model, uint32_t textureHandle) {
 	//引数で受けとった初期座標をセット
 	worldTransform_.translation_ = {0,3,50};
 	
+	//メンバ関数ポインタに関数のアドレスを代入する
+	void (Enemy::*Enemy::spFuncTable[])() = {
+	  &Enemy::Approach, //要素番号0
+	  &Enemy::Leave,    //要素番号1
+	};
+	
 }
 
 void Enemy::Update() 
@@ -28,17 +34,20 @@ void Enemy::Update()
 	//	worldTransform_.translation_.z = 50;
 	//}
 
-	switch (phase_) {
-	case Phase::Approach://接近フェーズ
-	default:
-		//移動
-		Approach();
-		break;
+	//switch (phase_) {
+	//case Phase::Approach://接近フェーズ
+	//default:
+	//	//移動
+	//	Approach();
+	//	break;
 
-	case Phase::Leave://離脱フェーズ
-		Leave();
-		break;
-	}
+	//case Phase::Leave://離脱フェーズ
+	//	Leave();
+	//	break;
+	//}
+	
+	//メンバ関数ポインタに入っている関数を呼び出す
+	(this->*spFuncTable[0])();
 
 	//行列の計算
 	affinMat.translate = affin::generateTransMat(worldTransform_);
