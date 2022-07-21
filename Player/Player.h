@@ -22,6 +22,9 @@ class Player {
 
 	float ConvertToRadians(float fDegrees) noexcept;
 	float ConvertToDegrees(float fRadians) noexcept;
+	
+	//ƒ[ƒ‹ƒhÀ•W‚ğæ“¾
+	Vector3 GetWorldPosition();
 
 	//UŒ‚
 	void Attack();

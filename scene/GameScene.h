@@ -12,8 +12,8 @@
 #include "DebugCamera.h"
 #include "math.h"
 
-#include "Player/Player.h"
 #include "enemy/Enemy.h"
+#include "Player/Player.h"
 
 /// <summary>
 /// ゲームシーン
