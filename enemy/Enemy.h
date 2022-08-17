@@ -10,6 +10,10 @@
 
 #include "EnemyBullet.h"
 
+
+//自機クラスの前方宣言
+class Player;
+
 class Enemy
 {
 	enum class Phase
@@ -54,6 +58,20 @@ public:
 
 	void Shot();
 
+	/// <summary>
+	/// 
+	/// </summary>
+
+	void SetPlayer(Player* player){player_ = player;}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+
 private:
 	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
@@ -69,6 +87,7 @@ private:
 	Vector3 approach_ = {0.0f, 0.0f, -0.05f};
 	//離脱速度
 	Vector3 leave_ = {-0.15f,0.1f,0.1f};
+	
 	// Affin関数の構造体
 	affin::AffinMat affinMat;
 	//打ち出すまでの時間
@@ -78,5 +97,8 @@ private:
 
 	////球
 	std::list<std::unique_ptr<EnemyBullet>> bullets_;
+
+	//自キャラ
+	Player* player_ = nullptr;
 
 };

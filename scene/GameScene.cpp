@@ -27,6 +27,8 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	reticleHandle_ = TextureManager::Load("reticle.png");
 	enemyHandle_ = TextureManager::Load("kuribo-.jpg");
+
+	
 	//自キャラの生成
 	player_ = new Player();
 	player_->Initialize(model_,textureHandle_);
@@ -34,6 +36,7 @@ void GameScene::Initialize() {
 	enemy_ = new Enemy();
 	enemy_->Init(model_, enemyHandle_);
 
+	enemy_->SetPlayer(player_);
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
