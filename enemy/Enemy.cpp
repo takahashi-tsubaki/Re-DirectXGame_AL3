@@ -1,4 +1,8 @@
 #include "enemy.h"
+#include "player/Player.h"
+#include "MathUtility.h"
+using namespace MathUtility;
+
 void Enemy::Init(Model* model, uint32_t textureHandle) {
 	assert(model);
 
@@ -99,37 +103,30 @@ void Enemy::Shot()
 	////球の速度
 	const float kBulletSpeed = 0.5f;
 
-	Vector3 velocity(0, 0, kBulletSpeed);
-
-	////クールタイムが０になったとき
-	//if (dalayTimer <= 0) {
-	//	//球の生成
-	//	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
-	//	//球の初期化
-	//	newBullet->Init(model_, worldTransform_.translation_, velocity);
-
-	//	//球の登録
-	//	bullets_.push_back(std::move(newBullet));
-
-	//	dalayTimer = 20.0f;
-	//}
-	//球の速度
-
 	//-------自機狙い弾-------//
 
 	assert(player_);
 
-	const float kBulletSpeed = 1.0f;
+	/*const float kBulletSpeed = 1.0f;*/
 
-	//プレイヤーの
-	player_->GetWorldPosition();
-	//敵の
-	GetWorldPosition();
+	//プレイヤーのワールド座標の取得
+	Vector3 playerPosition;
+	playerPosition = player_->GetWorldPosition();
+	//敵のワールド座標の取得
+	Vector3 enemyPosition;
+	enemyPosition = GetWorldPosition();
 
-	Vector3 distance;
+	Vector3 distance(0,0,0);
 
-	distance = GetWorldPosition() - player_;
+	//差分ベクトルを求める
+	distance =  enemyPosition - playerPosition;
 
+	//長さを求める
+	Vector3Length(distance);
+	//正規化
+	Vector3Normalize(distance);
+	//ベクトルの長さを,速さに合わせる
+	distance *= kBulletSpeed;//これが速度になる
 
 
 	//クールタイムが０になったとき
@@ -137,7 +134,7 @@ void Enemy::Shot()
 		//球の生成
 		std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
 		//球の初期化
-		newBullet->Init(model_, worldTransform_.translation_, velocity);
+		newBullet->Init(model_, worldTransform_.translation_, distance);
 
 		//球の登録
 		bullets_.push_back(std::move(newBullet));
@@ -150,9 +147,9 @@ Vector3 Enemy::GetWorldPosition() {
 	Vector3 worldPos;
 
 	//ワールド行列の平行移動成分を取得
-	worldPos.x = worldTransform_.matWorld_.m[2][0];
-	worldPos.y = worldTransform_.matWorld_.m[2][1];
-	worldPos.z = worldTransform_.matWorld_.m[2][2];
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	//戻り値
 	return worldPos;

@@ -35,6 +35,7 @@ void GameScene::Initialize() {
 	//敵キャラの生成
 	enemy_ = new Enemy();
 	enemy_->Init(model_, enemyHandle_);
+
 	enemy_->SetPlayer(player_);
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();

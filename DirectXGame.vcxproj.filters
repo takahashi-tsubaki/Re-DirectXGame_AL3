@@ -105,6 +105,9 @@
     <ClCompile Include="EnemyBullet.cpp">
       <Filter>ソース ファイル\bullet</Filter>
     </ClCompile>
+    <ClCompile Include="myMath.cpp">
+      <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\ViewProjection.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="EnemyBullet.h">
       <Filter>ヘッダー ファイル\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="myMath.h">
+      <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

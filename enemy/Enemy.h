@@ -87,6 +87,7 @@ private:
 	Vector3 approach_ = {0.0f, 0.0f, -0.05f};
 	//—£’E‘¬“x
 	Vector3 leave_ = {-0.15f,0.1f,0.1f};
+	
 	// AffinŠÖ”‚Ì\‘¢‘Ì
 	affin::AffinMat affinMat;
 	//‘Å‚¿o‚·‚Ü‚Å‚ÌŠÔ
