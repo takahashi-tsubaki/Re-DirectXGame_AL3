@@ -14,7 +14,7 @@
 
 #include "enemy/Enemy.h"
 #include "Player/Player.h"
-
+#include "skydome.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -61,7 +61,10 @@ class GameScene {
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
+	//モデルの生成
 	Model* model_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+	//デバックカメラの生成
 	DebugCamera* debugCamera_ = nullptr;
 
 	//テクスチャハンドル
@@ -71,7 +74,7 @@ class GameScene {
 
 	//スプライト
 	Sprite* sprite_ = nullptr;
-
+	
 
 	ViewProjection viewProjection_;
 	ViewProjection debugViewProjection_;
@@ -84,6 +87,8 @@ class GameScene {
 	//敵キャラ
 	Enemy* enemy_ = nullptr;
 	
+	skydome* skydome_ = nullptr;
+
 
 	/// <summary>
 	/// ゲームシーン用

@@ -20,6 +20,9 @@ void Enemy::Init(Model* model, uint32_t textureHandle) {
 
 void Enemy::Update() 
 {
+	//デスフラグが立った球を削除
+	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet) { return bullet->isDead(); });
+
 	//単位行列を設定
 	worldTransform_.matWorld_ = MathUtility::Matrix4Identity();
 
@@ -55,9 +58,7 @@ void Enemy::Update()
 	//球の発射する関数
 	Shot();
 
-	//デスフラグが立った球を削除
-	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet) { return bullet->isDead(); });
-
+	
 	//球の更新
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
 		bullet->Update();
