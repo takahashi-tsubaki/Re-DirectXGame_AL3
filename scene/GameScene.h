@@ -51,6 +51,10 @@ class GameScene {
   /// </summary>
 
 	void Move(ViewProjection viewProjection_);
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollision();
 
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;

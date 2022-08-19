@@ -29,11 +29,32 @@ void EnemyBullet::Update()
 	affin::setTransformationWolrdMat(affinMat, worldTransform_);
 	//行列の合成
 	worldTransform_.TransferMatrix();
-
-
+	
 }
 
 void EnemyBullet::Draw(const ViewProjection& viewProjection) 
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
+
+Vector3 EnemyBullet::GetWorldPosition() 
+{
+	Vector3 worldPos;
+
+	//ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	//戻り値
+	return worldPos;
+}
+
+void EnemyBullet::OnCollision() 
+{ 
+	isDead_ = true;
+}
+float EnemyBullet::GetRadius() 
+{ 
+	return radius;
 }

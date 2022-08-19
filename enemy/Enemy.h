@@ -71,8 +71,13 @@ public:
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
-
-private:
+	//衝突の検知したら呼び出されるコールバック関数
+	void OnCollision();
+	//弾リスト
+	const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+	//
+	float GetRadius();
+  private:
 	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	//モデル
@@ -97,8 +102,8 @@ private:
 
 	////球
 	std::list<std::unique_ptr<EnemyBullet>> bullets_;
-
+	
 	//自キャラ
 	Player* player_ = nullptr;
-
+	float radius = 1;
 };

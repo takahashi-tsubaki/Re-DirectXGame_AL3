@@ -206,3 +206,9 @@ Vector3 Player::GetWorldPosition()
 	//–ß‚è’l
 	return worldPos;
 }
+void Player::OnCollision() 
+{
+
+}
+
+float Player::GetRadius() { return radius; }

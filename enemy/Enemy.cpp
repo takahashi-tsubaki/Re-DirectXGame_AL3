@@ -55,6 +55,9 @@ void Enemy::Update()
 	//球の発射する関数
 	Shot();
 
+	//デスフラグが立った球を削除
+	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet) { return bullet->isDead(); });
+
 	//球の更新
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
 		bullet->Update();
@@ -154,3 +157,8 @@ Vector3 Enemy::GetWorldPosition() {
 	//戻り値
 	return worldPos;
 }
+void Enemy::OnCollision() 
+{
+
+}
+float Enemy::GetRadius() { return radius; }
