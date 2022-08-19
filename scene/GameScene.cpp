@@ -14,6 +14,8 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete player_;
 	delete enemy_;
+	delete skydome_;
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
@@ -23,6 +25,8 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 	model_ = Model::Create();
+	//3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("skydome",true);
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	reticleHandle_ = TextureManager::Load("reticle.png");
@@ -37,12 +41,17 @@ void GameScene::Initialize() {
 	enemy_->Init(model_, enemyHandle_);
 
 	enemy_->SetPlayer(player_);
+
+	skydome_ = new skydome();
+	//天球の生成
+	skydome_->Init(modelSkydome_);
+
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
 
-	////デバックカメラの生成
-	//debugCamera_ = new DebugCamera(1280, 720);
+	//デバックカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
 
 	////軸方向表示の有効化
 	//AxisIndicator::GetInstance()->SetVisible(true);
@@ -59,8 +68,11 @@ void GameScene::Update() {
 	player_->Update();
 	//敵キャラの更新
 	enemy_->Update();
+	//天球の更新
+	skydome_->Update();
+
 	//デバックカメラの更新
-	/*debugCamera_->Update();*/
+	debugCamera_->Update();
 
 #ifdef DEBUG
 	if (input_->TriggerKey(DIK_TAB)) 
@@ -116,12 +128,15 @@ void GameScene::Draw() {
 	// model_->Draw(worldTransform_,viewProjection_,textureHandle_);
 	////モデルと連動させるカメラの描画
 	
-	//model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+	/*model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);*/
+	
+	//天球の描画
+	skydome_->Draw(debugCamera_->GetViewProjection());
 	
 	//自キャラの描画
-	player_->Draw(viewProjection_);
+	player_->Draw(debugCamera_->GetViewProjection());
 	//敵キャラの描画
-	enemy_->Draw(viewProjection_);
+	enemy_->Draw(debugCamera_->GetViewProjection());
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
