@@ -26,8 +26,13 @@ public:
 
 	//描画
 	void Draw(const ViewProjection& viewProjection);
-
-private:
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+	bool isDead() const { return isDead_; }
+	//衝突の検知したら呼び出されるコールバック関数
+	void OnCollision();
+	float GetRadius();
+  private:
 	//ワールド変換データ
 	WorldTransform worldTransform_;
 	//モデル
@@ -40,4 +45,7 @@ private:
 
 	//アフィン
 	affin::AffinMat affinMat;
+	//デスフラグ
+	bool isDead_ = false;
+	float radius = 1;
 };

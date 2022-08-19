@@ -16,6 +16,13 @@ class PlayerBullet {
 
 	bool isDead() const {return isDead_;}
 
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	//衝突の検知したら呼び出されるコールバック関数
+	void OnCollision();
+
+	float GetRadius();
   private:
 	//ワールド変換データ
 	WorldTransform worldTransform_;
@@ -37,4 +44,6 @@ class PlayerBullet {
 	bool isDead_ = false;
 	//アフィン
 	affin::AffinMat affinMat;
+
+	float radius = 1;
 };

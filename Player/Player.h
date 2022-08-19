@@ -31,7 +31,15 @@ class Player {
 	//キャラの向きに応じた方向に球を出す
 	Vector3 bVelocity(Vector3& velocity, WorldTransform& worldTransform);
 
-  private:
+	//衝突の検知したら呼び出されるコールバック関数
+	void OnCollision();
+	//
+	//弾リスト
+	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; }
+
+	float GetRadius();
+
+private:
 	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	//モデル
@@ -51,4 +59,5 @@ class Player {
 
 	////球
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
+	float radius = 1;
 };

@@ -83,7 +83,7 @@ void GameScene::Update() {
 	else {
 		viewProjection_.UpdateMatrix();
 	}
-
+	CheckAllCollision();
 }
 
 void GameScene::Draw() {
@@ -141,4 +141,87 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+void GameScene::CheckAllCollision() {
+	//判定対象AとBの座標
+	Vector3 posA, posB;
+	float pRadius = player_->GetRadius();
+	float eRadius = enemy_->GetRadius();
+	//自機リストの取得
+	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets_ = player_->GetBullets();
+	//敵リストの取得
+	const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets_ = enemy_->GetBullets();
+
+#pragma region 自キャラと敵の弾の当たり判定
+	//自キャラの座標
+	posA = player_->GetWorldPosition();
+	//自キャラと敵弾全ての当たり判定
+	for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets_) 
+	{
+		posB = bullet->GetWorldPosition();
+		float ebRadius=bullet->GetRadius();
+		//座標Aと座標Bの距離を求める
+		//弾と弾の交差判定
+		if (
+		  ((posB.x - posA.x) * (posB.x - posA.x)) + 
+		  ((posB.y - posA.y) * (posB.y - posA.y)) +
+		  ((posB.z - posA.z) * (posB.z - posA.z)) <=
+		  ((pRadius + ebRadius) * (pRadius + ebRadius)))
+		{
+			//コールバックを呼び出すS
+			player_->OnCollision();
+			bullet->OnCollision();
+		}
+	}
+	
+#pragma endregion
+
+#pragma region 敵キャラと自機の弾の当たり判定
+	//敵キャラの座標
+	posA = enemy_->GetWorldPosition();
+	//敵キャラと自弾全ての当たり判定
+	for (const std::unique_ptr<PlayerBullet>& bullet : playerBullets_) {
+		posB = bullet->GetWorldPosition();
+		float pbRadius = bullet->GetRadius();
+		//座標Aと座標Bの距離を求める
+		//球と球
+		if (
+		  ((posB.x - posA.x) * (posB.x - posA.x)) + 
+		  ((posB.y - posA.y) * (posB.y - posA.y)) +
+		  ((posB.z - posA.z) * (posB.z - posA.z)) <=
+		  ((eRadius + pbRadius) * (eRadius + pbRadius))) {
+			//コールバックを呼び出す
+			enemy_->OnCollision();
+			bullet->OnCollision();
+		}
+	}
+
+
+#pragma endregion
+
+#pragma region 敵の弾と自機の弾の当たり判定
+	//自弾の座標
+	for (const std::unique_ptr<PlayerBullet>& pbullet : playerBullets_) {
+		posA = pbullet->GetWorldPosition();
+		float pbRadius = pbullet->GetRadius();
+		//敵弾の座標
+		for (const std::unique_ptr<EnemyBullet>& ebullet : enemyBullets_) {
+			posB = ebullet->GetWorldPosition();
+			float ebRadius = ebullet->GetRadius();
+			//球と球
+			if (
+			  ((posB.x - posA.x) * (posB.x - posA.x)) +
+			  ((posB.y - posA.y) * (posB.y - posA.y)) +
+			  ((posB.z - posA.z) * (posB.z - posA.z)) <=
+			  ((ebRadius + pbRadius) * (ebRadius + pbRadius))) 
+			{
+				//コールバックを呼び出す
+				pbullet->OnCollision();
+				ebullet->OnCollision();
+			}
+		}
+	}
+	
+#pragma endregion
+
 }
