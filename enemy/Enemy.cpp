@@ -122,7 +122,7 @@ void Enemy::Shot()
 	Vector3 distance(0,0,0);
 
 	//·•ªƒxƒNƒgƒ‹‚ğ‹‚ß‚é
-	distance =  enemyPosition - playerPosition;
+	distance =  playerPosition - enemyPosition ;
 
 	//’·‚³‚ğ‹‚ß‚é
 	Vector3Length(distance);

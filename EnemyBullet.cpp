@@ -24,7 +24,7 @@ void EnemyBullet::Update()
 	worldTransform_.matWorld_ = MathUtility::Matrix4Identity();
 
 	//À•W‚ğˆÚ“®‚³‚¹‚é
-	worldTransform_.translation_ -= velocity_;
+	worldTransform_.translation_ += velocity_;
 	affinMat.translate = affin::generateTransMat(worldTransform_);
 	affin::setTransformationWolrdMat(affinMat, worldTransform_);
 	//s—ñ‚Ì‡¬
