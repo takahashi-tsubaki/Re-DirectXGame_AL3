@@ -15,6 +15,7 @@
 #include "enemy/Enemy.h"
 #include "Player/Player.h"
 #include "skydome.h"
+#include "RailCamera.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -87,8 +88,11 @@ class GameScene {
 	//敵キャラ
 	Enemy* enemy_ = nullptr;
 	
+	//天球
 	skydome* skydome_ = nullptr;
 
+	//レールカメラ
+	RailCamera* railCamera_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用

@@ -32,7 +32,10 @@ void GameScene::Initialize() {
 	reticleHandle_ = TextureManager::Load("reticle.png");
 	enemyHandle_ = TextureManager::Load("kuribo-.jpg");
 
-	
+	//レールカメラの生成
+	railCamera_ = new RailCamera();
+	railCamera_->Init(Vector3(0, 0, -50), Vector3(0, 0, 0));
+
 	//自キャラの生成
 	player_ = new Player();
 	player_->Initialize(model_,textureHandle_);
@@ -46,12 +49,16 @@ void GameScene::Initialize() {
 	//天球の生成
 	skydome_->Init(modelSkydome_);
 
+
+	
+	player_->SetParent(railCamera_->GetWorldPosition());
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
+	
 
 	//デバックカメラの生成
-	debugCamera_ = new DebugCamera(1280, 720);
+	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
 
 	////軸方向表示の有効化
 	//AxisIndicator::GetInstance()->SetVisible(true);
@@ -64,8 +71,11 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
+	//
+	railCamera_->Update();
 	//自キャラの更新
 	player_->Update();
+
 	//敵キャラの更新
 	enemy_->Update();
 	//天球の更新
@@ -73,6 +83,8 @@ void GameScene::Update() {
 
 	//デバックカメラの更新
 	debugCamera_->Update();
+	
+	
 
 #ifdef DEBUG
 	if (input_->TriggerKey(DIK_TAB)) 
@@ -131,12 +143,11 @@ void GameScene::Draw() {
 	/*model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);*/
 	
 	//天球の描画
-	skydome_->Draw(debugCamera_->GetViewProjection());
-	
+	skydome_->Draw(railCamera_->GetViewProjection());
 	//自キャラの描画
-	player_->Draw(debugCamera_->GetViewProjection());
+	player_->Draw(railCamera_->GetViewProjection());
 	//敵キャラの描画
-	enemy_->Draw(debugCamera_->GetViewProjection());
+	enemy_->Draw(railCamera_->GetViewProjection());
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
