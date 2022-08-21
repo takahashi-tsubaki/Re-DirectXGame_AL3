@@ -30,10 +30,16 @@ void RailCamera::Update()
 	                             0, 0, 0, 1}; // Tx,Ty,Tz
 #pragma region 移動処理
 	if (input_->PushKey(DIK_UP)) {
-		move.z+= kCharaSpeed;
+		move.y+= kCharaSpeed;
 	}
 	if (input_->PushKey(DIK_DOWN)) {
-		move.z -= kCharaSpeed;
+		move.y -= kCharaSpeed;
+	}
+	if (input_->PushKey(DIK_LEFT)) {
+		move.x -= kCharaSpeed;
+	}
+	if (input_->PushKey(DIK_RIGHT)) {
+		move.x += kCharaSpeed;
 	}
 
 	worldTransform_.translation_.x += move.x;
@@ -68,6 +74,7 @@ void RailCamera::Update()
 
 	worldTransform_.matWorld_.operator*=(matTrans);
 
+
 	//行列の転送
 	worldTransform_.TransferMatrix();
 
@@ -99,10 +106,8 @@ void RailCamera::Update()
 float RailCamera::ConvertToRadians(float fDegrees) noexcept { return fDegrees * (PI / 180.0f); }
 float RailCamera::ConvertToDegrees(float fRadians) noexcept { return fRadians * (180.0f / PI); }
 
-WorldTransform* RailCamera::GetWorldPosition() {
-	//ワールド座標を入れるための変数
-	WorldTransform worldPos;
-
+WorldTransform* RailCamera::GetWorldPosition()
+{
 	//戻り値
-	return &worldPos;
+	return &worldTransform_;
 }

@@ -39,8 +39,6 @@ class Player {
 
 	//親子構造のセッター
 	void SetParent(WorldTransform* worldTransform);
-	//親子構造のゲッター
-	void Move(WorldTransform worldTransform);
 
   private:
 	//ワールドトランスフォーム
