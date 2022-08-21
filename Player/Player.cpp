@@ -14,7 +14,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	
 	worldTransform_.rotation_ = {};
 
-	worldTransform_.translation_ = {};
+	worldTransform_.translation_ = Vector3{0,0,50};
 
 	//
 }
@@ -96,8 +96,12 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	//関数の合成
+	//行列の合成
 	affin::setTransformationWolrdMat(affinMat, worldTransform_);
+
+	////親子のワールド座標の設定
+
+	worldTransform_.matWorld_ *= worldTransform_.parent_->matWorld_;
 
 	//行列の転送
 	worldTransform_.TransferMatrix();
@@ -148,6 +152,9 @@ void Player::Attack() {
 
 		dalayTimer-=0.1f;
 
+		//自キャラの座標をコピー
+		Vector3 position = GetWorldPosition();
+
 		//球の速度
 		const float kBulletSpeed = 0.5f;
 
@@ -162,7 +169,7 @@ void Player::Attack() {
 			//球の生成
 			std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
 			//球の初期化
-			newBullet->Init(model_, worldTransform_.translation_, velocity);
+			newBullet->Init(model_, position, velocity);
 
 			//球の登録
 			bullets_.push_back(std::move(newBullet));
@@ -212,3 +219,8 @@ void Player::OnCollision()
 }
 
 float Player::GetRadius() { return radius; }
+
+void Player::SetParent(WorldTransform* worldTransform) 
+{ 
+	worldTransform_.parent_ = worldTransform;
+}

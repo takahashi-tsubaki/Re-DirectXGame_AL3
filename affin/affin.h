@@ -43,7 +43,12 @@ Matrix4 generateRotateZMat(WorldTransform& worldTransform);
 
 Matrix4 generateTransMat(WorldTransform& worldTransform);
 
+
 //(2) ƒ[ƒ‹ƒhs—ñ‚ğ¶¬‚·‚éŠÖ”
 void setTransformationWolrdMat(AffinMat& affinMat, WorldTransform& worldTransform);
+
+
+//
+Vector3 matVector(Vector3 v, Matrix4 mat);
 
 } // namespace affin

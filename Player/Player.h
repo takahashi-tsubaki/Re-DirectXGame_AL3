@@ -16,8 +16,6 @@ class Player {
 	//
 	void Update();
 	//
-	void Move();
-	//
 	void Draw(ViewProjection viewProjection);
 
 	float ConvertToRadians(float fDegrees) noexcept;
@@ -39,7 +37,10 @@ class Player {
 
 	float GetRadius();
 
-private:
+	//親子構造のセッター
+	void SetParent(WorldTransform* worldTransform);
+
+  private:
 	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	//モデル
