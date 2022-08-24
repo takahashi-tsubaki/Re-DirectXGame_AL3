@@ -1,10 +1,10 @@
 ﻿#include "Audio.h"
+#include "AxisIndicator.h"
 #include "DirectXCommon.h"
 #include "GameScene.h"
+#include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "WinApp.h"
-#include "AxisIndicator.h"
-#include "PrimitiveDrawer.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -20,7 +20,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow("LE2B_13_タカハシ_ツバキ_AL3");
+	win->CreateGameWindow();
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
