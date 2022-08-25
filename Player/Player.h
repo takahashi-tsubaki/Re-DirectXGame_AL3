@@ -8,15 +8,20 @@
 #include <cassert>
 #include <memory>
 #include <list>
+#include "afin/afin.h"
+#include "WinApp.h"
+
 class Player {
   public:
 	Player();
 	//
 	void Initialize(Model* model, uint32_t textureHandle);
 	//
-	void Update();
+	void Update(const ViewProjection& viewProjection);
 	//
 	void Draw(ViewProjection viewProjection);
+	//
+	void DrawUI();
 
 	float ConvertToRadians(float fDegrees) noexcept;
 	float ConvertToDegrees(float fRadians) noexcept;
@@ -43,6 +48,10 @@ class Player {
   private:
 	//ワールドトランスフォーム
 	WorldTransform worldTransform_;
+	//
+	
+	//3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
 	//モデル
 	Model* model_ = nullptr;
 	//テクスチャハンドル
@@ -61,4 +70,13 @@ class Player {
 	////球
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 	float radius = 1;
+
+	//2Dレティクル用スプライト
+	std::unique_ptr<Sprite> sprite2DReticle_;
+
+	//色
+	Vector4 RED = {1.0f, 0.0f, 0.0f, 1.0f};
+
+	WinApp* winApp_ = nullptr;
+
 };

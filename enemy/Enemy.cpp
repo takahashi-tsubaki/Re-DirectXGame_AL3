@@ -103,7 +103,7 @@ void Enemy::Shot() {
 	playerPosition = player_->GetWorldPosition();
 	//“G‚Ìƒ[ƒ‹ƒhÀ•W‚Ìæ“¾
 	Vector3 enemyPosition;
-	enemyPosition = GetWorldPosition();
+	enemyPosition = affin::GetWorldPosition(worldTransform_.matWorld_);
 
 	Vector3 distance(0, 0, 0);
 

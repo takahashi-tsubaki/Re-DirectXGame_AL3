@@ -31,8 +31,9 @@ void GameScene::Initialize() {
 
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
-	reticleHandle_ = TextureManager::Load("reticle.png");
 	enemyHandle_ = TextureManager::Load("kuribo-.jpg");
+	//2Dレティクル用テクスチャ
+	TextureManager::Load("reticle.png");
 
 	//レールカメラの生成
 	railCamera_ = new RailCamera();
@@ -70,7 +71,7 @@ void GameScene::Update() {
 	//
 	railCamera_->Update();
 	//自キャラの更新
-	player_->Update();
+	player_->Update(railCamera_->GetViewProjection());
 
 	//更新コマンド
 	UpdateEnemyPopCommands();
@@ -173,6 +174,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
 
 	//// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
