@@ -5,7 +5,9 @@
 #include "Matrix4.h"
 #include "WorldTransform.h"
 #include "math.h"
-
+#include "Vector4.h"
+#include "cmath"
+#include "WinApp.h"
 namespace affin {
 
 enum AXIS_NO {
@@ -43,6 +45,8 @@ Matrix4 generateRotateZMat(WorldTransform& worldTransform);
 
 Matrix4 generateTransMat(WorldTransform& worldTransform);
 
+Matrix4 setViewportMat(WorldTransform& worldTransform, WinApp* window, const Vector3& v); 
+
 
 //(2) ÉèÅ[ÉãÉhçsóÒÇê∂ê¨Ç∑ÇÈä÷êî
 void setTransformationWolrdMat(AffinMat& affinMat, WorldTransform& worldTransform);
@@ -51,4 +55,12 @@ void setTransformationWolrdMat(AffinMat& affinMat, WorldTransform& worldTransfor
 //
 Vector3 matVector(Vector3 v, Matrix4 mat);
 
+//ê≥ãKâªä÷êî
+Vector3 Vector3Normalize(Vector3& v);
+
+Vector3 GetWorldPosition(Matrix4 mat);
+
+const Vector3 addVector3(const Vector3& v1, const Vector3& v2);
+
+const Vector3 division(const Vector3& v, Matrix4 mat);
 } // namespace affin

@@ -1,6 +1,7 @@
 #include "Player.h"
+using namespace MathUtility;
 Player::Player() {}
-void Player::Initialize(Model* model, uint32_t textureHandle) {
+void Player::Initialize(Model * model, uint32_t textureHandle) {
 	assert(model);
 
 	model_ = model;
@@ -8,19 +9,29 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	input_ = Input::GetInstance();
 	debugText_ = DebugText::GetInstance();
-
+	winApp_ = WinApp::GetInstance();
 	
 	worldTransform_.Initialize();
 	
 	worldTransform_.rotation_ = {};
 
-	worldTransform_.translation_ = Vector3{0,0,50};
+	worldTransform_.translation_ = Vector3{0,0,30};
 
-	//
+	//3Dレティクルのワールドトランスフォームの初期化
+	worldTransform3DReticle_.Initialize();
+
+	//レティクル用テクスチャを取得
+	uint32_t textureReticle = TextureManager::Load("reticle.png");
+
+	//スプライト生成
+	sprite2DReticle_.reset(Sprite::Create(
+	  textureReticle, Vector2(640,320), RED,
+	  Vector2(0.5f, 0.5f)));
+
 }
 
 
-void Player::Update() {
+void Player::Update(const ViewProjection& viewProjection) {
 
 	//デスフラグが立った球を削除
 	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) 
@@ -115,7 +126,39 @@ void Player::Update() {
 		bullet->Update();
 	}
 	
+	
 
+	//自機のワールド座標から3Dレティクルのワールド座標を計算
+	
+	//自機から3Dレティクルの距離
+	const float kDistancePlayerTo3DReticle = 50.0f;
+	//自機から3Dレティクルへのオフセット
+	Vector3 offSet = {0, 0, 1.0f};
+	//自機のワールド座標の回転を反映
+	offSet = affin::matVector(offSet,worldTransform_.matWorld_);
+	//ベクトルの長さを整える
+	offSet = affin::Vector3Normalize(offSet)*kDistancePlayerTo3DReticle;
+	//3Dレティクルの座標を設定
+	worldTransform3DReticle_.translation_ =
+	  affin::addVector3(affin::GetWorldPosition(worldTransform_.matWorld_) ,offSet );
+	////行列の更新と転送
+	//affin::generateTransMat(worldTransform3DReticle_);
+	AffinTrans::affin(worldTransform3DReticle_);
+	affin::setTransformationWolrdMat(affinMat, worldTransform3DReticle_);
+	worldTransform3DReticle_.TransferMatrix();
+	
+	// 3Dレティクルのワールド行列から,ワールド座標を取得
+	Vector3 positionReticle = affin::GetWorldPosition(worldTransform3DReticle_.matWorld_);
+	//ビューポート行列
+	Matrix4 matViewport = affin::setViewportMat(worldTransform3DReticle_, winApp_,Vector3(0,0,0));
+	
+	//ビュー行列とプロジェクション行列,ビューポート行列を合成する
+	Matrix4 matViewprojectionViewport =
+	  viewProjection.matView * viewProjection.matProjection * matViewport;
+	//ワールド→スクリーン座標変換
+	positionReticle = affin::division(positionReticle, matViewprojectionViewport);
+	//座標設定
+	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
 	//デバックテキスト
 	debugText_->SetPos(20, 100);
 	debugText_->Printf(
@@ -129,12 +172,26 @@ void Player::Update() {
 	debugText_->SetPos(20,80);
 	debugText_->Printf("dalay : %f",dalayTimer );
 
+	//デバックテキスト
+	debugText_->SetPos(20, 140);
+	debugText_->Printf(
+	  "translation : (%f,%f,%f)", worldTransform3DReticle_.translation_.x,
+	  worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+	//デバックテキスト
+	debugText_->SetPos(20, 260);
+	debugText_->Printf(
+	  "position : (%f,%f,%f)", positionReticle.x, positionReticle.y, positionReticle.z);
+
 }
 //描画処理
 void Player::Draw(ViewProjection viewProjection) 
 {
+
 	//プレイヤーの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	//3Dレティクルの描画
+	model_->Draw(worldTransform3DReticle_, viewProjection, textureHandle_);
+
 	//球の描画
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) 
 	{
@@ -142,7 +199,10 @@ void Player::Draw(ViewProjection viewProjection)
 	}
 
 }
-
+void Player::DrawUI()
+{ 
+	sprite2DReticle_->Draw(); 
+}
 float Player::ConvertToRadians(float fDegrees) noexcept { return fDegrees * (PI / 180.0f); }
 float Player::ConvertToDegrees(float fRadians) noexcept { return fRadians * (180.0f / PI); }
 
@@ -153,7 +213,7 @@ void Player::Attack() {
 		dalayTimer-=0.1f;
 
 		//自キャラの座標をコピー
-		Vector3 position = GetWorldPosition();
+		Vector3 position = affin::GetWorldPosition(worldTransform_.matWorld_);
 
 		//球の速度
 		const float kBulletSpeed = 0.5f;
@@ -162,6 +222,12 @@ void Player::Attack() {
 
 		//速度ベクトルを自機の向きに合わせて回転させる
 		velocity = bVelocity(velocity, worldTransform_);
+
+		//自機から標準オブジェクトへのベクトル
+		velocity = affin::GetWorldPosition(worldTransform3DReticle_.matWorld_) -
+		           affin::GetWorldPosition(worldTransform_.matWorld_);
+
+		velocity = affin::Vector3Normalize(velocity) * kBulletSpeed;
 
 		//クールタイムが０になったとき
 		if (dalayTimer <= 0) 
@@ -176,8 +242,12 @@ void Player::Attack() {
 
 			dalayTimer = 5.0f;
 		}
+
+		
 		
 	}
+	
+
 }
 
 Vector3 Player::bVelocity(Vector3& velocity, WorldTransform& worldTransform) {

@@ -85,6 +85,12 @@
     <Filter Include="ヘッダー ファイル\camera">
       <UniqueIdentifier>{9559e93d-d14a-495f-a7b3-425983eb5e41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\afin">
+      <UniqueIdentifier>{7f02ff98-c2c1-4c2b-88d0-2670e71ebc43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\afin">
+      <UniqueIdentifier>{f150dcfb-676e-4157-b63d-d56e57d924e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -125,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="RailCamera.cpp">
       <Filter>ソース ファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="afin\afin.cpp">
+      <Filter>ソース ファイル\afin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="RailCamera.h">
       <Filter>ヘッダー ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="afin\afin.h">
+      <Filter>ヘッダー ファイル\afin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
