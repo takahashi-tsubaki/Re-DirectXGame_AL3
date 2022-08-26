@@ -1,5 +1,5 @@
 #include "affin.h"
-
+using namespace MathUtility;
 void affin::setScaleMat(Matrix4& mat, WorldTransform& worldTransform) {
 	//スケーリング倍率を行列に設定する
 	mat.m[0][0] = worldTransform.scale_.x;
@@ -199,4 +199,8 @@ const Vector3 affin::division(const Vector3& v, Matrix4 mat)
 	devision.z = devision.z / devision.w; 
 
 	return {devision.x, devision.y, devision.z};
+}
+void affin::HangView(Matrix4 mat1, Matrix4 mat2, Matrix4 mat3)
+{ 
+	 mat1 * mat2 * mat3;
 }

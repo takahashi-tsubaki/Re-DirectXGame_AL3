@@ -10,6 +10,7 @@
 #include <list>
 #include "afin/afin.h"
 #include "WinApp.h"
+#include "MathUtility.h"
 
 class Player {
   public:

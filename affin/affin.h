@@ -63,4 +63,7 @@ Vector3 GetWorldPosition(Matrix4 mat);
 const Vector3 addVector3(const Vector3& v1, const Vector3& v2);
 
 const Vector3 division(const Vector3& v, Matrix4 mat);
+//çáê¨çsóÒ
+void HangView(Matrix4 mat1, Matrix4 mat2, Matrix4 mat3); 
+
 } // namespace affin
